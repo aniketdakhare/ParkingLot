@@ -44,4 +44,20 @@ public class ParkingLotTest
             Assert.assertEquals(ParkingLotException.Type.CAR_NUMBER_MISMATCH, e.type);
         }
     }
+
+    @Test
+    public void givenCarDetails_WhenTheParkingIsFull_ShouldGiveException()
+    {
+        try
+        {
+            parkingLot.park("MH-32-AW-4348");
+            parkingLot.park("MH-22-RT-2324");
+            parkingLot.park("MH-26-YU-8884");
+            parkingLot.park("MH-30-PO-9999");
+        }
+        catch (ParkingLotException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }
