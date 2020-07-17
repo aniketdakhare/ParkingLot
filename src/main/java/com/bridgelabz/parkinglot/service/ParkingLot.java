@@ -10,11 +10,12 @@ public class ParkingLot
     public boolean park( String carNumber)
     {
         parkingList.add(carNumber);
-        return true;
+        return parkingList.contains(carNumber);
     }
 
     public boolean unPark(String carNumber)
     {
-        return false;
+        parkingList.remove(carNumber);
+        return !parkingList.contains(carNumber);
     }
 }
