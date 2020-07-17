@@ -46,18 +46,22 @@ public class ParkingLotTest
     }
 
     @Test
-    public void givenCarDetails_WhenTheParkingIsFull_ShouldGiveException()
+    public void givenCarDetails_WhenTheParkingIsFull_ShouldInformByOwner()
     {
-        try
-        {
-            parkingLot.park("MH-32-AW-4348");
-            parkingLot.park("MH-22-RT-2324");
-            parkingLot.park("MH-26-YU-8884");
-            parkingLot.park("MH-30-PO-9999");
-        }
-        catch (ParkingLotException e)
-        {
-            Assert.assertEquals(ParkingLotException.Type.PARKING_FULL, e.type);
-        }
+        parkingLot.park("MH-32-AW-4348");
+        parkingLot.park("MH-22-RT-2324");
+        parkingLot.park("MH-26-YU-8884");
+        String park = parkingLot.informOwner("MH-30-PO-9999");
+        Assert.assertEquals("Parking is Full",park);
+    }
+
+    @Test
+    public void givenCarDetails_WhenTheParkingIsFull_ShouldInformByAirportSecurity()
+    {
+        parkingLot.park("MH-32-AW-4348");
+        parkingLot.park("MH-22-RT-2324");
+        parkingLot.park("MH-26-YU-8884");
+        String park = parkingLot.informAirportSecurity("MH-30-PO-9999");
+        Assert.assertEquals("Redirect to Another parking",park);
     }
 }
