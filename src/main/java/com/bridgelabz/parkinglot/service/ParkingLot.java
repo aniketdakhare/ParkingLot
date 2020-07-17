@@ -12,4 +12,9 @@ public class ParkingLot
         parkingList.add(carNumber);
         return true;
     }
+
+    public boolean unPark(String carNumber)
+    {
+        return false;
+    }
 }

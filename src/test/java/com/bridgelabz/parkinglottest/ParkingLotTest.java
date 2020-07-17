@@ -13,4 +13,13 @@ public class ParkingLotTest
         boolean parked = parkingLot.park("MH-32-AW-4348");
         Assert.assertTrue(parked);
     }
+
+    @Test
+    public void givenCarDetails_WhenProvidedToUnParkTheCar_ShouldReturnTrue()
+    {
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.park("MH-32-AW-4348");
+        boolean parked = parkingLot.unPark("MH-32-AW-4348");
+        Assert.assertTrue(parked);
+    }
 }
