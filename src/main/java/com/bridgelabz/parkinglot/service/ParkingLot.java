@@ -11,6 +11,9 @@ public class ParkingLot
 
     public boolean park( String carNumber)
     {
+        int CAPACITY = 3;
+        if (parkingList.size() >= CAPACITY)
+            throw new ParkingLotException(ParkingLotException.Type.PARKING_FULL);
         parkingList.add(carNumber);
         return parkingList.contains(carNumber);
     }

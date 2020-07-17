@@ -57,7 +57,7 @@ public class ParkingLotTest
         }
         catch (ParkingLotException e)
         {
-            e.printStackTrace();
+            Assert.assertEquals(ParkingLotException.Type.PARKING_FULL, e.type);
         }
     }
 }

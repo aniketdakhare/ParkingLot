@@ -4,13 +4,14 @@ public class ParkingLotException extends RuntimeException
 {
     public enum Type
     {
-        CAR_NUMBER_MISMATCH("Car for a given car number is not found.");
+        CAR_NUMBER_MISMATCH("Car for a given car number is not found."),
+        PARKING_FULL("Parking is full.");
 
-        String massage;
+        String message;
 
-        Type(String massage)
+        Type(String message)
         {
-            this.massage = massage;
+            this.message = message;
         }
     }
 
@@ -18,7 +19,7 @@ public class ParkingLotException extends RuntimeException
 
     public ParkingLotException(Type type)
     {
-        super(type.massage);
+        super(type.message);
         this.type = type;
     }
 }
