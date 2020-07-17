@@ -34,7 +34,14 @@ public class ParkingLotTest
     @Test
     public void givenIncorrectCarDetails_WhenProvidedToUnParkTheCar_ShouldGiveException()
     {
-        parkingLot.park("MH-32-AW-4348");
-        parkingLot.unPark("MH-34-AW-7555");
+        try
+        {
+            parkingLot.park("MH-32-AW-4348");
+            parkingLot.unPark("MH-34-AW-7555");
+        }
+        catch (ParkingLotException e)
+        {
+            Assert.assertEquals(ParkingLotException.Type.CAR_NUMBER_MISMATCH, e.type);
+        }
     }
 }
