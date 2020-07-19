@@ -1,5 +1,6 @@
 package com.bridgelabz.parkinglottest;
 
+import com.bridgelabz.parkinglot.enums.ParkingStatus;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
 import com.bridgelabz.parkinglot.service.ParkingLot;
 import org.junit.Assert;
@@ -19,16 +20,32 @@ public class ParkingLotTest
     @Test
     public void givenCarDetails_WhenAddedToParkingLot_ShouldReturnTrue()
     {
-        boolean parked = parkingLot.park("MH-32-AW-4348");
-        Assert.assertTrue(parked);
+        parkingLot.park("MH-32-AW-4348");
+        boolean isPresent = parkingLot.isCarPresent("MH-32-AW-4348");
+        Assert.assertTrue(isPresent);
+    }
+
+    @Test
+    public void givenSameCarDetailsTwice_WhenProvidedToParkTheCar_ShouldGiveException()
+    {
+        try
+        {
+            parkingLot.park("MH-32-AW-4348");
+            parkingLot.park("MH-32-AW-4348");
+        }
+        catch (ParkingLotException e)
+        {
+            Assert.assertEquals(ParkingLotException.Type.SAME_CAR_NUMBER, e.type);
+        }
     }
 
     @Test
     public void givenCarDetails_WhenProvidedToUnParkTheCar_ShouldReturnTrue()
     {
         parkingLot.park("MH-32-AW-4348");
-        boolean parked = parkingLot.unPark("MH-32-AW-4348");
-        Assert.assertTrue(parked);
+        parkingLot.unPark("MH-32-AW-4348");
+        boolean isPresent = parkingLot.isCarPresent("MH-32-AW-4348");
+        Assert.assertFalse(isPresent);
     }
 
     @Test
@@ -46,22 +63,22 @@ public class ParkingLotTest
     }
 
     @Test
-    public void givenCarDetails_WhenTheParkingIsFull_ShouldInformByOwner()
+    public void givenCarDetails_WhenTheParkingIsFull_ShouldInformToOwner()
     {
         parkingLot.park("MH-32-AW-4348");
         parkingLot.park("MH-22-RT-2324");
         parkingLot.park("MH-26-YU-8884");
-        String park = parkingLot.informOwner("MH-30-PO-9999");
-        Assert.assertEquals("Parking is Full",park);
+        String park = parkingLot.informOwner();
+        Assert.assertEquals(ParkingStatus.PARKING_FULL.message,park);
     }
 
     @Test
-    public void givenCarDetails_WhenTheParkingIsFull_ShouldInformByAirportSecurity()
+    public void givenCarDetails_WhenTheParkingIsFull_ShouldInformToAirportSecurity()
     {
         parkingLot.park("MH-32-AW-4348");
         parkingLot.park("MH-22-RT-2324");
         parkingLot.park("MH-26-YU-8884");
-        String park = parkingLot.informAirportSecurity("MH-30-PO-9999");
-        Assert.assertEquals("Redirect to Another parking",park);
+        String park = parkingLot.informAirportSecurity();
+        Assert.assertEquals(ParkingStatus.PARKING_FULL.message,park);
     }
 }

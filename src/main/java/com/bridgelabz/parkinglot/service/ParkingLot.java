@@ -3,10 +3,8 @@ package com.bridgelabz.parkinglot.service;
 import com.bridgelabz.parkinglot.enums.ParkingStatus;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
 import com.bridgelabz.parkinglot.utility.AirportSecurity;
-import com.bridgelabz.parkinglot.utility.Observer;
 import com.bridgelabz.parkinglot.utility.ParkingOwner;
 
-import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +12,7 @@ public class ParkingLot
 {
     private List<String> parkingList = new ArrayList<>();
     private final int CAPACITY;
+    private String parkingStatus;
 
     public ParkingLot(int CAPACITY)
     {
@@ -22,13 +21,16 @@ public class ParkingLot
 
     public void park(String carNumber)
     {
+        if (parkingList.contains(carNumber))
+            throw new ParkingLotException(ParkingLotException.Type.SAME_CAR_NUMBER);
+        if (parkingList.size() < CAPACITY)
+            parkingList.add(carNumber);
         if (parkingList.size() >= CAPACITY)
         {
-            this.informOwner(ParkingStatus.PARKING_FULL.message);
-            this.informAirportSecurity(ParkingStatus.PARKING_FULL.message);
-            return;
+            this.parkingStatus = ParkingStatus.PARKING_FULL.message;
+            this.informOwner();
+            this.informAirportSecurity();
         }
-        parkingList.add(carNumber);
     }
 
     public boolean isCarPresent(String carNumber)
@@ -36,25 +38,24 @@ public class ParkingLot
         return parkingList.contains(carNumber);
     }
 
-    public boolean unPark(String carNumber)
+    public void unPark(String carNumber)
     {
         if (!parkingList.contains(carNumber))
             throw new ParkingLotException(ParkingLotException.Type.CAR_NUMBER_MISMATCH);
         parkingList.remove(carNumber);
-        return !parkingList.contains(carNumber);
     }
 
-    public String informOwner(String status)
+    public String informOwner()
     {
         ParkingOwner owner = new ParkingOwner();
-        owner.parkingStatus(status);
+        owner.parkingStatus(parkingStatus);
         return owner.status;
     }
 
-    public String informAirportSecurity(String status)
+    public String informAirportSecurity()
     {
         AirportSecurity airportSecurity = new AirportSecurity();
-        airportSecurity.parkingStatus(status);
+        airportSecurity.parkingStatus(parkingStatus);
         return airportSecurity.status;
     }
 }
