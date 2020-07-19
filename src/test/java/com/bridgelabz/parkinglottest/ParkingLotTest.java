@@ -68,8 +68,8 @@ public class ParkingLotTest
         parkingLot.park("MH-32-AW-4348");
         parkingLot.park("MH-22-RT-2324");
         parkingLot.park("MH-26-YU-8884");
-        String park = parkingLot.informOwner();
-        Assert.assertEquals(ParkingStatus.PARKING_FULL.message,park);
+        String status = parkingLot.informOwner();
+        Assert.assertEquals(ParkingStatus.PARKING_FULL.message, status);
     }
 
     @Test
@@ -78,7 +78,18 @@ public class ParkingLotTest
         parkingLot.park("MH-32-AW-4348");
         parkingLot.park("MH-22-RT-2324");
         parkingLot.park("MH-26-YU-8884");
-        String park = parkingLot.informAirportSecurity();
-        Assert.assertEquals(ParkingStatus.PARKING_FULL.message,park);
+        String status = parkingLot.informAirportSecurity();
+        Assert.assertEquals(ParkingStatus.PARKING_FULL.message, status);
+    }
+
+    @Test
+    public void givenParkingLotCapacity_WhenAvailable_ShouldInformToOwner()
+    {
+        parkingLot.park("MH-32-AW-4348");
+        parkingLot.park("MH-22-RT-2324");
+        parkingLot.park("MH-26-YU-8884");
+        parkingLot.unPark("MH-22-RT-2324");
+        String status = parkingLot.informOwner();
+        Assert.assertEquals(ParkingStatus.PARKING_IS_AVAILABLE.message, status);
     }
 }

@@ -43,6 +43,11 @@ public class ParkingLot
         if (!parkingList.contains(carNumber))
             throw new ParkingLotException(ParkingLotException.Type.CAR_NUMBER_MISMATCH);
         parkingList.remove(carNumber);
+        if (parkingList.size() < CAPACITY)
+        {
+            this.parkingStatus = ParkingStatus.PARKING_IS_AVAILABLE.message;
+            this.informOwner();
+        }
     }
 
     public String informOwner()
