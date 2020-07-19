@@ -2,11 +2,11 @@ package com.bridgelabz.parkinglot.utility;
 
 public class AirportSecurity implements Observer
 {
+    public String status;
+
     @Override
-    public String isParkingFull(boolean check)
+    public void parkingStatus(String status)
     {
-        if (!check)
-            return "Redirect to Another parking";
-        return "Parking Available";
+        this.status = status;
     }
 }

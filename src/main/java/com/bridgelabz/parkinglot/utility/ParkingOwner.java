@@ -2,11 +2,11 @@ package com.bridgelabz.parkinglot.utility;
 
 public class ParkingOwner implements Observer
 {
+    public String status;
+
     @Override
-    public String isParkingFull(boolean check)
+    public void parkingStatus(String status)
     {
-        if (!check)
-            return "Parking is Full";
-        return "Parking is Available";
+        this.status = status;
     }
 }

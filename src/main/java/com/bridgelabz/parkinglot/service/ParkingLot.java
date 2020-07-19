@@ -1,9 +1,12 @@
 package com.bridgelabz.parkinglot.service;
 
+import com.bridgelabz.parkinglot.enums.ParkingStatus;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
 import com.bridgelabz.parkinglot.utility.AirportSecurity;
+import com.bridgelabz.parkinglot.utility.Observer;
 import com.bridgelabz.parkinglot.utility.ParkingOwner;
 
+import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,11 +20,19 @@ public class ParkingLot
         this.CAPACITY = CAPACITY;
     }
 
-    public boolean park(String carNumber)
+    public void park(String carNumber)
     {
         if (parkingList.size() >= CAPACITY)
-            return false;
+        {
+            this.informOwner(ParkingStatus.PARKING_FULL.message);
+            this.informAirportSecurity(ParkingStatus.PARKING_FULL.message);
+            return;
+        }
         parkingList.add(carNumber);
+    }
+
+    public boolean isCarPresent(String carNumber)
+    {
         return parkingList.contains(carNumber);
     }
 
@@ -33,13 +44,17 @@ public class ParkingLot
         return !parkingList.contains(carNumber);
     }
 
-    public String informOwner(String carNumber)
+    public String informOwner(String status)
     {
-        return new ParkingOwner().isParkingFull(this.park(carNumber));
+        ParkingOwner owner = new ParkingOwner();
+        owner.parkingStatus(status);
+        return owner.status;
     }
 
-    public String informAirportSecurity(String carNumber)
+    public String informAirportSecurity(String status)
     {
-        return new AirportSecurity().isParkingFull(this.park(carNumber));
+        AirportSecurity airportSecurity = new AirportSecurity();
+        airportSecurity.parkingStatus(status);
+        return airportSecurity.status;
     }
 }
