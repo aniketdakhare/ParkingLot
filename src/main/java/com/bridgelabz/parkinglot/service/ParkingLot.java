@@ -10,10 +10,15 @@ import java.util.List;
 public class ParkingLot
 {
     private List<String> parkingList = new ArrayList<>();
+    private final int CAPACITY;
 
-    public boolean park( String carNumber)
+    public ParkingLot(int CAPACITY)
     {
-        int CAPACITY = 3;
+        this.CAPACITY = CAPACITY;
+    }
+
+    public boolean park(String carNumber)
+    {
         if (parkingList.size() >= CAPACITY)
             return false;
         parkingList.add(carNumber);
