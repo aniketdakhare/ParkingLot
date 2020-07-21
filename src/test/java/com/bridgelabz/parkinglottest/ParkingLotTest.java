@@ -102,12 +102,28 @@ public class ParkingLotTest
     }
 
     @Test
-    public void givenCarDetails_WhenProvidedToUnPark_ShouldReturnParkingSlotNumber()
+    public void givenCarDetails_WhenProvidedToGetCarLocation_ShouldReturnParkingSlotNumber()
     {
         parkingLot.park(1, "MH-32-AW-4348");
         parkingLot.park(2, "MH-22-RT-2324");
         parkingLot.park(3, "MH-26-YU-8884");
         int slotNumber = parkingLot.carLocation("MH-22-RT-2324");
         Assert.assertEquals(2, slotNumber);
+    }
+
+    @Test
+    public void givenIncorrectCarDetails_WhenProvidedToGetCarLocation_ShouldGiveException()
+    {
+        try
+        {
+            parkingLot.park(1, "MH-32-AW-4348");
+            parkingLot.park(2, "MH-22-RT-2324");
+            parkingLot.park(3, "MH-26-YU-8884");
+            parkingLot.carLocation("MH-22-RT-2325");
+        }
+        catch (ParkingLotException e)
+        {
+            Assert.assertEquals(ParkingLotException.Type.CAR_NUMBER_MISMATCH, e.type);
+        }
     }
 }

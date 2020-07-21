@@ -28,9 +28,7 @@ public class ParkingLot
         if (parkingMap.containsValue(carNumber))
             throw new ParkingLotException(ParkingLotException.Type.SAME_CAR_NUMBER);
         if (parkingMap.size() < CAPACITY)
-        {
             this.parkingMap = parkingAttendant.parkCar(parkingMap, slotNumber, carNumber);
-        }
         if (parkingMap.size() >= CAPACITY)
         {
             this.parkingStatus = ParkingStatus.PARKING_FULL.message;
@@ -58,6 +56,8 @@ public class ParkingLot
 
     public int carLocation(String carNumber)
     {
+        if (!parkingMap.containsValue(carNumber))
+            throw new ParkingLotException(ParkingLotException.Type.CAR_NUMBER_MISMATCH);
         return parkingMap.keySet()
                 .stream()
                 .filter(key -> carNumber.equals(parkingMap.get(key)))
