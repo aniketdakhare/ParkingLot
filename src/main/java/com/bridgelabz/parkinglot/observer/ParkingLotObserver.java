@@ -1,6 +1,6 @@
 package com.bridgelabz.parkinglot.observer;
 
-public interface Observer
+public interface ParkingLotObserver
 {
     String getParkingStatus();
     void setParkingStatus(String parkingStatus);

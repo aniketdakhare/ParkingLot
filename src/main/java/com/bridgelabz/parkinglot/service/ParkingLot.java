@@ -3,23 +3,24 @@ package com.bridgelabz.parkinglot.service;
 import com.bridgelabz.parkinglot.enums.ParkingStatus;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
 import com.bridgelabz.parkinglot.observer.AirportSecurity;
-import com.bridgelabz.parkinglot.observer.Observer;
+import com.bridgelabz.parkinglot.observer.ParkingLotObserver;
 import com.bridgelabz.parkinglot.observer.ParkingOwner;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ParkingLot
 {
     private Map<Integer, String> parkingMap;
     private final int CAPACITY;
     private String parkingStatus;
+    private List<ParkingLotObserver> observerList;
     private ParkingAttendant parkingAttendant;
 
     public ParkingLot(int CAPACITY)
     {
         this.CAPACITY = CAPACITY;
         parkingMap = new HashMap<>();
+        observerList = new ArrayList<>();
         parkingAttendant = new ParkingAttendant();
     }
 
@@ -32,8 +33,7 @@ public class ParkingLot
         if (parkingMap.size() >= CAPACITY)
         {
             this.parkingStatus = ParkingStatus.PARKING_FULL.message;
-            this.informOwner();
-            this.informAirportSecurity();
+            this.informObservers();
         }
     }
 
@@ -50,7 +50,7 @@ public class ParkingLot
         if (parkingMap.size() < CAPACITY)
         {
             this.parkingStatus = ParkingStatus.PARKING_IS_AVAILABLE.message;
-            this.informOwner();
+            this.informObservers();
         }
     }
 
@@ -64,17 +64,13 @@ public class ParkingLot
                 .findFirst().get();
     }
 
-    public String informOwner()
+    public void informObservers()
     {
-        Observer owner = new ParkingOwner();
-        owner.setParkingStatus(parkingStatus);
-        return owner.getParkingStatus();
+        observerList.forEach(observer -> observer.setParkingStatus(parkingStatus));
     }
 
-    public String informAirportSecurity()
+    public void addParkingLotObservers(ParkingLotObserver... observer)
     {
-        Observer airportSecurity = new AirportSecurity();
-        airportSecurity.setParkingStatus(parkingStatus);
-        return airportSecurity.getParkingStatus();
+        Collections.addAll(observerList, observer);
     }
 }

@@ -2,6 +2,9 @@ package com.bridgelabz.parkinglottest;
 
 import com.bridgelabz.parkinglot.enums.ParkingStatus;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
+import com.bridgelabz.parkinglot.observer.AirportSecurity;
+import com.bridgelabz.parkinglot.observer.ParkingLotObserver;
+import com.bridgelabz.parkinglot.observer.ParkingOwner;
 import com.bridgelabz.parkinglot.service.ParkingLot;
 import org.junit.Assert;
 import org.junit.Before;
@@ -65,31 +68,39 @@ public class ParkingLotTest
     @Test
     public void givenCarDetails_WhenTheParkingIsFull_ShouldInformToOwner()
     {
+        ParkingLotObserver owner = new ParkingOwner();
+        parkingLot.addParkingLotObservers(owner);
         parkingLot.park(1, "MH-32-AW-4348");
         parkingLot.park(2, "MH-22-RT-2324");
         parkingLot.park(3, "MH-26-YU-8884");
-        String status = parkingLot.informOwner();
+        String status = owner.getParkingStatus();
         Assert.assertEquals(ParkingStatus.PARKING_FULL.message, status);
     }
 
     @Test
     public void givenCarDetails_WhenTheParkingIsFull_ShouldInformToAirportSecurity()
     {
+        ParkingLotObserver owner = new ParkingOwner();
+        ParkingLotObserver airportSecurity = new AirportSecurity();
+        parkingLot.addParkingLotObservers(owner, airportSecurity);
         parkingLot.park(1, "MH-32-AW-4348");
         parkingLot.park(2, "MH-22-RT-2324");
         parkingLot.park(3, "MH-26-YU-8884");
-        String status = parkingLot.informAirportSecurity();
-        Assert.assertEquals(ParkingStatus.PARKING_FULL.message, status);
+        String ownerStatus = owner.getParkingStatus();
+        String airportSecurityStatus = airportSecurity.getParkingStatus();
+        Assert.assertEquals(ParkingStatus.PARKING_FULL.message, ownerStatus, airportSecurityStatus);
     }
 
     @Test
     public void givenParkingLotCapacity_WhenAvailable_ShouldInformToOwner()
     {
+        ParkingLotObserver owner = new ParkingOwner();
+        parkingLot.addParkingLotObservers(owner);
         parkingLot.park(1, "MH-32-AW-4348");
         parkingLot.park(2, "MH-22-RT-2324");
         parkingLot.park(3, "MH-26-YU-8884");
         parkingLot.unPark("MH-22-RT-2324");
-        String status = parkingLot.informOwner();
+        String status = owner.getParkingStatus();
         Assert.assertEquals(ParkingStatus.PARKING_IS_AVAILABLE.message, status);
     }
 
