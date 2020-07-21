@@ -6,12 +6,12 @@ import com.bridgelabz.parkinglot.observer.AirportSecurity;
 import com.bridgelabz.parkinglot.observer.Observer;
 import com.bridgelabz.parkinglot.observer.ParkingOwner;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ParkingLot
 {
-    private List<String> parkingList;
+    private Map<Integer, String> parkingMap;
     private final int CAPACITY;
     private String parkingStatus;
     private ParkingAttendant parkingAttendant;
@@ -19,19 +19,19 @@ public class ParkingLot
     public ParkingLot(int CAPACITY)
     {
         this.CAPACITY = CAPACITY;
-        parkingList = new ArrayList<>();
+        parkingMap = new HashMap<>();
         parkingAttendant = new ParkingAttendant();
     }
 
-    public void park(String carNumber)
+    public void park(int slotNumber, String carNumber)
     {
-        if (parkingList.contains(carNumber))
+        if (parkingMap.containsValue(carNumber))
             throw new ParkingLotException(ParkingLotException.Type.SAME_CAR_NUMBER);
-        if (parkingList.size() < CAPACITY)
+        if (parkingMap.size() < CAPACITY)
         {
-            this.parkingList = parkingAttendant.parkCar(parkingList, carNumber);
+            this.parkingMap = parkingAttendant.parkCar(parkingMap, slotNumber, carNumber);
         }
-        if (parkingList.size() >= CAPACITY)
+        if (parkingMap.size() >= CAPACITY)
         {
             this.parkingStatus = ParkingStatus.PARKING_FULL.message;
             this.informOwner();
@@ -41,15 +41,15 @@ public class ParkingLot
 
     public boolean isCarPresent(String carNumber)
     {
-        return parkingList.contains(carNumber);
+        return parkingMap.containsValue(carNumber);
     }
 
     public void unPark(String carNumber)
     {
-        if (!parkingList.contains(carNumber))
+        if (!parkingMap.containsValue(carNumber))
             throw new ParkingLotException(ParkingLotException.Type.CAR_NUMBER_MISMATCH);
-        parkingList.remove(carNumber);
-        if (parkingList.size() < CAPACITY)
+        parkingMap.values().removeIf(value -> value.contains(carNumber));
+        if (parkingMap.size() < CAPACITY)
         {
             this.parkingStatus = ParkingStatus.PARKING_IS_AVAILABLE.message;
             this.informOwner();

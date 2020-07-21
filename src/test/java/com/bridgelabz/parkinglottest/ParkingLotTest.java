@@ -20,7 +20,7 @@ public class ParkingLotTest
     @Test
     public void givenCarDetails_WhenAddedToParkingLot_ShouldReturnTrue()
     {
-        parkingLot.park("MH-32-AW-4348");
+        parkingLot.park(1, "MH-32-AW-4348");
         boolean isPresent = parkingLot.isCarPresent("MH-32-AW-4348");
         Assert.assertTrue(isPresent);
     }
@@ -30,8 +30,8 @@ public class ParkingLotTest
     {
         try
         {
-            parkingLot.park("MH-32-AW-4348");
-            parkingLot.park("MH-32-AW-4348");
+            parkingLot.park(1, "MH-32-AW-4348");
+            parkingLot.park(2, "MH-32-AW-4348");
         }
         catch (ParkingLotException e)
         {
@@ -42,7 +42,7 @@ public class ParkingLotTest
     @Test
     public void givenCarDetails_WhenProvidedToUnParkTheCar_ShouldReturnTrue()
     {
-        parkingLot.park("MH-32-AW-4348");
+        parkingLot.park(1, "MH-32-AW-4348");
         parkingLot.unPark("MH-32-AW-4348");
         boolean isPresent = parkingLot.isCarPresent("MH-32-AW-4348");
         Assert.assertFalse(isPresent);
@@ -53,7 +53,7 @@ public class ParkingLotTest
     {
         try
         {
-            parkingLot.park("MH-32-AW-4348");
+            parkingLot.park(1, "MH-32-AW-4348");
             parkingLot.unPark("MH-34-AW-7555");
         }
         catch (ParkingLotException e)
@@ -65,9 +65,9 @@ public class ParkingLotTest
     @Test
     public void givenCarDetails_WhenTheParkingIsFull_ShouldInformToOwner()
     {
-        parkingLot.park("MH-32-AW-4348");
-        parkingLot.park("MH-22-RT-2324");
-        parkingLot.park("MH-26-YU-8884");
+        parkingLot.park(1, "MH-32-AW-4348");
+        parkingLot.park(2, "MH-22-RT-2324");
+        parkingLot.park(3, "MH-26-YU-8884");
         String status = parkingLot.informOwner();
         Assert.assertEquals(ParkingStatus.PARKING_FULL.message, status);
     }
@@ -75,9 +75,9 @@ public class ParkingLotTest
     @Test
     public void givenCarDetails_WhenTheParkingIsFull_ShouldInformToAirportSecurity()
     {
-        parkingLot.park("MH-32-AW-4348");
-        parkingLot.park("MH-22-RT-2324");
-        parkingLot.park("MH-26-YU-8884");
+        parkingLot.park(1, "MH-32-AW-4348");
+        parkingLot.park(2, "MH-22-RT-2324");
+        parkingLot.park(3, "MH-26-YU-8884");
         String status = parkingLot.informAirportSecurity();
         Assert.assertEquals(ParkingStatus.PARKING_FULL.message, status);
     }
@@ -85,18 +85,18 @@ public class ParkingLotTest
     @Test
     public void givenParkingLotCapacity_WhenAvailable_ShouldInformToOwner()
     {
-        parkingLot.park("MH-32-AW-4348");
-        parkingLot.park("MH-22-RT-2324");
-        parkingLot.park("MH-26-YU-8884");
+        parkingLot.park(1, "MH-32-AW-4348");
+        parkingLot.park(2, "MH-22-RT-2324");
+        parkingLot.park(3, "MH-26-YU-8884");
         parkingLot.unPark("MH-22-RT-2324");
         String status = parkingLot.informOwner();
         Assert.assertEquals(ParkingStatus.PARKING_IS_AVAILABLE.message, status);
     }
 
     @Test
-    public void givenCarToParkingAttendant_WhenParked_ShouldReturnTrue()
+    public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedSlot_ShouldReturnTrue()
     {
-        parkingLot.park("MH-32-AW-4348");
+        parkingLot.park(1, "MH-32-AW-4348");
         boolean isPresent = parkingLot.isCarPresent("MH-32-AW-4348");
         Assert.assertTrue(isPresent);
     }

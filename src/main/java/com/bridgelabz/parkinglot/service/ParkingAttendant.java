@@ -1,15 +1,15 @@
 package com.bridgelabz.parkinglot.service;
 
-import java.util.List;
+import java.util.Map;
 
 public class ParkingAttendant
 {
-    private List<String> parkingList;
+    private Map<Integer, String> parkingMap;
 
-    public List<String> parkCar(List<String> parkingList, String carNumber)
+    public Map<Integer, String> parkCar(Map<Integer, String> parkingList, int slotNumber, String carNumber)
     {
-        this.parkingList = parkingList;
-        this.parkingList.add(carNumber);
-        return this.parkingList;
+        this.parkingMap = parkingList;
+        this.parkingMap.put(slotNumber, carNumber);
+        return this.parkingMap;
     }
 }
