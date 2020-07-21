@@ -92,4 +92,12 @@ public class ParkingLotTest
         String status = parkingLot.informOwner();
         Assert.assertEquals(ParkingStatus.PARKING_IS_AVAILABLE.message, status);
     }
+
+    @Test
+    public void givenCarToParkingAttendant_WhenParked_ShouldReturnTrue()
+    {
+        parkingLot.park("MH-32-AW-4348");
+        boolean isPresent = parkingLot.isCarPresent("MH-32-AW-4348");
+        Assert.assertTrue(isPresent);
+    }
 }

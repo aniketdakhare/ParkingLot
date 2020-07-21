@@ -2,21 +2,25 @@ package com.bridgelabz.parkinglot.service;
 
 import com.bridgelabz.parkinglot.enums.ParkingStatus;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
-import com.bridgelabz.parkinglot.utility.AirportSecurity;
-import com.bridgelabz.parkinglot.utility.ParkingOwner;
+import com.bridgelabz.parkinglot.observer.AirportSecurity;
+import com.bridgelabz.parkinglot.observer.Observer;
+import com.bridgelabz.parkinglot.observer.ParkingOwner;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ParkingLot
 {
-    private List<String> parkingList = new ArrayList<>();
+    private List<String> parkingList;
     private final int CAPACITY;
     private String parkingStatus;
+    private ParkingAttendant parkingAttendant;
 
     public ParkingLot(int CAPACITY)
     {
         this.CAPACITY = CAPACITY;
+        parkingList = new ArrayList<>();
+        parkingAttendant = new ParkingAttendant();
     }
 
     public void park(String carNumber)
@@ -24,7 +28,9 @@ public class ParkingLot
         if (parkingList.contains(carNumber))
             throw new ParkingLotException(ParkingLotException.Type.SAME_CAR_NUMBER);
         if (parkingList.size() < CAPACITY)
-            parkingList.add(carNumber);
+        {
+            this.parkingList = parkingAttendant.parkCar(parkingList, carNumber);
+        }
         if (parkingList.size() >= CAPACITY)
         {
             this.parkingStatus = ParkingStatus.PARKING_FULL.message;
@@ -52,15 +58,15 @@ public class ParkingLot
 
     public String informOwner()
     {
-        ParkingOwner owner = new ParkingOwner();
-        owner.parkingStatus(parkingStatus);
-        return owner.status;
+        Observer owner = new ParkingOwner();
+        owner.setParkingStatus(parkingStatus);
+        return owner.getParkingStatus();
     }
 
     public String informAirportSecurity()
     {
-        AirportSecurity airportSecurity = new AirportSecurity();
-        airportSecurity.parkingStatus(parkingStatus);
-        return airportSecurity.status;
+        Observer airportSecurity = new AirportSecurity();
+        airportSecurity.setParkingStatus(parkingStatus);
+        return airportSecurity.getParkingStatus();
     }
 }
