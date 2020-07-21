@@ -100,4 +100,14 @@ public class ParkingLotTest
         boolean isPresent = parkingLot.isCarPresent("MH-32-AW-4348");
         Assert.assertTrue(isPresent);
     }
+
+    @Test
+    public void givenCarDetails_WhenProvidedToUnPark_ShouldReturnParkingSlotNumber()
+    {
+        parkingLot.park(1, "MH-32-AW-4348");
+        parkingLot.park(2, "MH-22-RT-2324");
+        parkingLot.park(3, "MH-26-YU-8884");
+        int slotNumber = parkingLot.carLocation("MH-22-RT-2324");
+        Assert.assertEquals(2, slotNumber);
+    }
 }

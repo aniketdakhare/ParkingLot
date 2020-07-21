@@ -56,6 +56,14 @@ public class ParkingLot
         }
     }
 
+    public int carLocation(String carNumber)
+    {
+        return parkingMap.keySet()
+                .stream()
+                .filter(key -> carNumber.equals(parkingMap.get(key)))
+                .findFirst().get();
+    }
+
     public String informOwner()
     {
         Observer owner = new ParkingOwner();
