@@ -23,7 +23,7 @@ public class ParkingLotTest
     @Test
     public void givenCarDetails_WhenAddedToParkingLot_ShouldReturnTrue()
     {
-        parkingLot.park(1, "MH-32-AW-4348");
+        parkingLot.park("MH-32-AW-4348");
         boolean isPresent = parkingLot.isCarPresent("MH-32-AW-4348");
         Assert.assertTrue(isPresent);
     }
@@ -33,8 +33,8 @@ public class ParkingLotTest
     {
         try
         {
-            parkingLot.park(1, "MH-32-AW-4348");
-            parkingLot.park(2, "MH-32-AW-4348");
+            parkingLot.park("MH-32-AW-4348");
+            parkingLot.park("MH-32-AW-4348");
         }
         catch (ParkingLotException e)
         {
@@ -45,7 +45,7 @@ public class ParkingLotTest
     @Test
     public void givenCarDetails_WhenProvidedToUnParkTheCar_ShouldReturnTrue()
     {
-        parkingLot.park(1, "MH-32-AW-4348");
+        parkingLot.park("MH-32-AW-4348");
         parkingLot.unPark("MH-32-AW-4348");
         boolean isPresent = parkingLot.isCarPresent("MH-32-AW-4348");
         Assert.assertFalse(isPresent);
@@ -56,7 +56,7 @@ public class ParkingLotTest
     {
         try
         {
-            parkingLot.park(1, "MH-32-AW-4348");
+            parkingLot.park("MH-32-AW-4348");
             parkingLot.unPark("MH-34-AW-7555");
         }
         catch (ParkingLotException e)
@@ -70,9 +70,10 @@ public class ParkingLotTest
     {
         ParkingLotObserver owner = new ParkingOwner();
         parkingLot.addParkingLotObservers(owner);
-        parkingLot.park(1, "MH-32-AW-4348");
-        parkingLot.park(2, "MH-22-RT-2324");
-        parkingLot.park(3, "MH-26-YU-8884");
+        parkingLot.park("MH-32-AW-4348");
+        parkingLot.park("MH-22-RT-2324");
+        parkingLot.park("MH-26-YU-8884");
+        parkingLot.park("MH-26-YU-4444");
         String status = owner.getParkingStatus();
         Assert.assertEquals(ParkingStatus.PARKING_FULL.message, status);
     }
@@ -83,12 +84,14 @@ public class ParkingLotTest
         ParkingLotObserver owner = new ParkingOwner();
         ParkingLotObserver airportSecurity = new AirportSecurity();
         parkingLot.addParkingLotObservers(owner, airportSecurity);
-        parkingLot.park(1, "MH-32-AW-4348");
-        parkingLot.park(2, "MH-22-RT-2324");
-        parkingLot.park(3, "MH-26-YU-8884");
+        parkingLot.park("MH-32-AW-4348");
+        parkingLot.park("MH-22-RT-2324");
+        parkingLot.park("MH-26-YU-8884");
+        parkingLot.park("MH-26-YU-4444");
         String ownerStatus = owner.getParkingStatus();
         String airportSecurityStatus = airportSecurity.getParkingStatus();
-        Assert.assertEquals(ParkingStatus.PARKING_FULL.message, ownerStatus, airportSecurityStatus);
+        Assert.assertEquals(ParkingStatus.PARKING_FULL.message, airportSecurityStatus);
+        Assert.assertEquals(ParkingStatus.PARKING_FULL.message, ownerStatus);
     }
 
     @Test
@@ -96,9 +99,9 @@ public class ParkingLotTest
     {
         ParkingLotObserver owner = new ParkingOwner();
         parkingLot.addParkingLotObservers(owner);
-        parkingLot.park(1, "MH-32-AW-4348");
-        parkingLot.park(2, "MH-22-RT-2324");
-        parkingLot.park(3, "MH-26-YU-8884");
+        parkingLot.park("MH-32-AW-4348");
+        parkingLot.park("MH-22-RT-2324");
+        parkingLot.park("MH-26-YU-8884");
         parkingLot.unPark("MH-22-RT-2324");
         String status = owner.getParkingStatus();
         Assert.assertEquals(ParkingStatus.PARKING_IS_AVAILABLE.message, status);
@@ -107,7 +110,7 @@ public class ParkingLotTest
     @Test
     public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedSlot_ShouldReturnTrue()
     {
-        parkingLot.park(1, "MH-32-AW-4348");
+        parkingLot.park("MH-32-AW-4348");
         boolean isPresent = parkingLot.isCarPresent("MH-32-AW-4348");
         Assert.assertTrue(isPresent);
     }
@@ -115,9 +118,9 @@ public class ParkingLotTest
     @Test
     public void givenCarDetails_WhenProvidedToGetCarLocation_ShouldReturnParkingSlotNumber()
     {
-        parkingLot.park(1, "MH-32-AW-4348");
-        parkingLot.park(2, "MH-22-RT-2324");
-        parkingLot.park(3, "MH-26-YU-8884");
+        parkingLot.park("MH-32-AW-4348");
+        parkingLot.park("MH-22-RT-2324");
+        parkingLot.park("MH-26-YU-8884");
         int slotNumber = parkingLot.carLocation("MH-22-RT-2324");
         Assert.assertEquals(2, slotNumber);
     }
@@ -127,9 +130,9 @@ public class ParkingLotTest
     {
         try
         {
-            parkingLot.park(1, "MH-32-AW-4348");
-            parkingLot.park(2, "MH-22-RT-2324");
-            parkingLot.park(3, "MH-26-YU-8884");
+            parkingLot.park("MH-32-AW-4348");
+            parkingLot.park("MH-22-RT-2324");
+            parkingLot.park("MH-26-YU-8884");
             parkingLot.carLocation("MH-22-RT-2325");
         }
         catch (ParkingLotException e)
