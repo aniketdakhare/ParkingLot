@@ -1,5 +1,7 @@
 package com.bridgelabz.parkinglot.service;
 
+import com.bridgelabz.parkinglot.enums.DriverType;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -20,17 +22,30 @@ public class ParkingAttendant
                 .forEach(lotNumber -> parkingLots.add(new ParkingLot(totalParkingSlots)));
     }
 
-    public void parkCar(String carNumber)
+    public void parkCar(String carNumber, DriverType driverType)
     {
-        ParkingLot lot = getLotToPark();
+        ParkingLot lot = getLotToPark(driverType);
         lot.park(carNumber);
     }
 
-    private ParkingLot getLotToPark()
+    private ParkingLot getLotToPark(DriverType driverType)
     {
+        ParkingLot parkingLot = null;
         List<ParkingLot> selectLot = new ArrayList<>(this.parkingLots);
-        selectLot.sort(Comparator.comparing(ParkingLot::getCarCount));
-        return selectLot.get(0);
+        switch (driverType)
+        {
+            case NORMAL_DRIVER:
+                selectLot.sort(Comparator.comparing(ParkingLot::getCarCount));
+                parkingLot = selectLot.get(0);
+                break;
+            case HANDICAP_DRIVER:
+                int i = 0;
+                if (selectLot.get(i).getCarCount() == totalParkingSlots)
+                    i++;
+                parkingLot = selectLot.get(i);
+                break;
+        }
+        return parkingLot;
     }
 
     public boolean isCarPresent(String carNumber)
@@ -40,7 +55,9 @@ public class ParkingAttendant
 
     public String getCarLocation(String carNumber)
     {
-        ParkingLot parkingLot = this.parkingLots.stream().filter(lot -> lot.isCarPresent(carNumber)).findFirst().get();
+        ParkingLot parkingLot = this.parkingLots.stream()
+                .filter(lot -> lot.isCarPresent(carNumber))
+                .findFirst().get();
         return String.format("Parking Lot: %d  Parking Slot: %d", parkingLots.indexOf(parkingLot) + 1,
                 parkingLot.carLocation(carNumber));
     }

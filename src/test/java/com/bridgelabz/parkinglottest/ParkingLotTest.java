@@ -1,5 +1,6 @@
 package com.bridgelabz.parkinglottest;
 
+import com.bridgelabz.parkinglot.enums.DriverType;
 import com.bridgelabz.parkinglot.enums.ParkingStatus;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
 import com.bridgelabz.parkinglot.observer.AirportSecurity;
@@ -157,7 +158,7 @@ public class ParkingLotTest
     public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedLotAndSlot_ShouldReturnTrue()
     {
         ParkingAttendant parkingAttendant = new ParkingAttendant(5, 3);
-        parkingAttendant.parkCar("MH-32-AW-4348");
+        parkingAttendant.parkCar("MH-32-AW-4348", DriverType.NORMAL_DRIVER);
         boolean isPresent = parkingAttendant.isCarPresent("MH-32-AW-4348");
         Assert.assertTrue(isPresent);
     }
@@ -166,14 +167,30 @@ public class ParkingLotTest
     public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedLotAndSlot_ShouldReturnLocationOfCar()
     {
         ParkingAttendant parkingAttendant = new ParkingAttendant(5, 3);
-        parkingAttendant.parkCar("MH-22-RT-2324");
-        parkingAttendant.parkCar("MH-26-YU-8884");
-        parkingAttendant.parkCar("MH-14-OP-2222");
-        parkingAttendant.parkCar("MH-33-KL-5454");
-        parkingAttendant.parkCar("MH-35-SD-3333");
-        parkingAttendant.parkCar("MH-32-AW-4348");
+        parkingAttendant.parkCar("MH-22-RT-2324", DriverType.NORMAL_DRIVER);
+        parkingAttendant.parkCar("MH-26-YU-8884", DriverType.NORMAL_DRIVER);
+        parkingAttendant.parkCar("MH-14-OP-2222", DriverType.NORMAL_DRIVER);
+        parkingAttendant.parkCar("MH-33-KL-5454", DriverType.NORMAL_DRIVER);
+        parkingAttendant.parkCar("MH-35-SD-3333", DriverType.NORMAL_DRIVER);
+        parkingAttendant.parkCar("MH-32-AW-4348", DriverType.NORMAL_DRIVER);
         String carLocation = parkingAttendant.getCarLocation("MH-32-AW-4348");
         String expectedLocation = "Parking Lot: 3  Parking Slot: 2";
+        Assert.assertEquals(expectedLocation, carLocation);
+    }
+
+    @Test
+    public void givenCarDetailsOfHandicapDriver_WhenParkedAtNearestLotWithFreeSpace_ShouldReturnLocationOfCar()
+    {
+        ParkingAttendant parkingAttendant = new ParkingAttendant(3, 3);
+        parkingAttendant.parkCar("MH-22-RT-2324", DriverType.NORMAL_DRIVER);
+        parkingAttendant.parkCar("MH-26-YU-8884", DriverType.HANDICAP_DRIVER);
+        parkingAttendant.parkCar("MH-14-OP-2222", DriverType.HANDICAP_DRIVER);
+        parkingAttendant.parkCar("MH-18-OC-9922", DriverType.NORMAL_DRIVER);
+        parkingAttendant.parkCar("MH-33-KL-5454", DriverType.HANDICAP_DRIVER);
+        parkingAttendant.parkCar("MH-35-SD-3333", DriverType.NORMAL_DRIVER);
+        parkingAttendant.parkCar("MH-32-AW-4348", DriverType.HANDICAP_DRIVER);
+        String carLocation = parkingAttendant.getCarLocation("MH-33-KL-5454");
+        String expectedLocation = "Parking Lot: 2  Parking Slot: 2";
         Assert.assertEquals(expectedLocation, carLocation);
     }
 }
