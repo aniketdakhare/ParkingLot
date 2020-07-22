@@ -5,6 +5,7 @@ import com.bridgelabz.parkinglot.exception.ParkingLotException;
 import com.bridgelabz.parkinglot.observer.AirportSecurity;
 import com.bridgelabz.parkinglot.observer.ParkingLotObserver;
 import com.bridgelabz.parkinglot.observer.ParkingOwner;
+import com.bridgelabz.parkinglot.service.ParkingAttendant;
 import com.bridgelabz.parkinglot.service.ParkingLot;
 import org.junit.Assert;
 import org.junit.Before;
@@ -150,5 +151,29 @@ public class ParkingLotTest
         String parkedTime = parkingLot.getParkedTime("MH-32-AW-4348");
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss");
         Assert.assertEquals(LocalDateTime.now().format(format), parkedTime);
+    }
+
+    @Test
+    public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedLotAndSlot_ShouldReturnTrue()
+    {
+        ParkingAttendant parkingAttendant = new ParkingAttendant(5, 3);
+        parkingAttendant.parkCar("MH-32-AW-4348");
+        boolean isPresent = parkingAttendant.isCarPresent("MH-32-AW-4348");
+        Assert.assertTrue(isPresent);
+    }
+
+    @Test
+    public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedLotAndSlot_ShouldReturnLocationOfCar()
+    {
+        ParkingAttendant parkingAttendant = new ParkingAttendant(5, 3);
+        parkingAttendant.parkCar("MH-22-RT-2324");
+        parkingAttendant.parkCar("MH-26-YU-8884");
+        parkingAttendant.parkCar("MH-14-OP-2222");
+        parkingAttendant.parkCar("MH-33-KL-5454");
+        parkingAttendant.parkCar("MH-35-SD-3333");
+        parkingAttendant.parkCar("MH-32-AW-4348");
+        String carLocation = parkingAttendant.getCarLocation("MH-32-AW-4348");
+        String expectedLocation = "Parking Lot: 3  Parking Slot: 2";
+        Assert.assertEquals(expectedLocation, carLocation);
     }
 }

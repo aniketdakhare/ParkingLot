@@ -12,17 +12,15 @@ public class ParkingLot
     private Map<Integer, ParkingSlotDetails> parkingMap;
     private final int CAPACITY;
     private String parkingStatus;
+    private int carCount = 0;
     private List<ParkingLotObserver> observerList;
-    private ParkingAttendant parkingAttendant;
     private ParkingSlotDetails slotDetails;
-
 
     public ParkingLot(int CAPACITY)
     {
         this.CAPACITY = CAPACITY;
         parkingMap = new LinkedHashMap<>();
         observerList = new ArrayList<>();
-        parkingAttendant = new ParkingAttendant();
         slotDetails = new ParkingSlotDetails();
         IntStream.rangeClosed(1, (CAPACITY)).forEach(slotNumber -> parkingMap.put(slotNumber, slotDetails));
     }
@@ -31,7 +29,9 @@ public class ParkingLot
     {
         if (this.isCarPresent(carNumber))
             throw new ParkingLotException(ParkingLotException.Type.SAME_CAR_NUMBER);
-        this.parkingMap = parkingAttendant.parkCar(parkingMap, carNumber);
+        int slotNumber = this.getSlotToPark(this.parkingMap);
+        this.parkingMap.put(slotNumber, new ParkingSlotDetails(carNumber, slotNumber));
+        carCount ++;
         if (parkingMap.size() > CAPACITY)
         {
             parkingMap.values().removeIf(value -> value.getCarNumber().equals(carNumber));
@@ -56,6 +56,7 @@ public class ParkingLot
             this.parkingStatus = ParkingStatus.PARKING_IS_AVAILABLE.message;
             this.informObservers();
         }
+        carCount --;
     }
 
     public int carLocation(String carNumber)
@@ -72,6 +73,14 @@ public class ParkingLot
                 .orElseThrow(() -> new ParkingLotException(ParkingLotException.Type.CAR_NUMBER_MISMATCH));
     }
 
+    public int getSlotToPark(Map<Integer, ParkingSlotDetails> parkingMap)
+    {
+        return parkingMap.keySet()
+                .stream()
+                .filter(slot -> parkingMap.get(slot).getCarNumber() == null)
+                .findFirst().orElse(0);
+    }
+
     public void informObservers()
     {
         observerList.forEach(observer -> observer.setParkingStatus(parkingStatus));
@@ -85,5 +94,10 @@ public class ParkingLot
     public String getParkedTime(String carNumber)
     {
         return this.getSlotDetails(carNumber).getParkedTime();
+    }
+
+    public int getCarCount()
+    {
+        return carCount;
     }
 }
