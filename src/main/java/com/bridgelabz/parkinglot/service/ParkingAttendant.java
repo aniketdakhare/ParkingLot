@@ -6,13 +6,13 @@ import java.util.Map;
 
 public class ParkingAttendant
 {
-    private Map<Integer, String> parkingMap;
+    private Map<Integer, ParkingSlotDetails> parkingMap;
 
-    public Map<Integer, String> parkCar(Map<Integer, String> parkingMap, String carNumber)
+    public Map<Integer, ParkingSlotDetails> parkCar(Map<Integer, ParkingSlotDetails> parkingMap, String carNumber)
     {
         int slotNumber = ParkingOwner.getSlotToPark(parkingMap);
         this.parkingMap = parkingMap;
-        this.parkingMap.put(slotNumber, carNumber);
+        this.parkingMap.put(slotNumber, new ParkingSlotDetails(carNumber, slotNumber));
         return this.parkingMap;
     }
 }

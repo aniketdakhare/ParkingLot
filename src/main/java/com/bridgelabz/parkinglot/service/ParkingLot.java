@@ -9,11 +9,13 @@ import java.util.stream.IntStream;
 
 public class ParkingLot
 {
-    private Map<Integer, String> parkingMap;
+    private Map<Integer, ParkingSlotDetails> parkingMap;
     private final int CAPACITY;
     private String parkingStatus;
     private List<ParkingLotObserver> observerList;
     private ParkingAttendant parkingAttendant;
+    private ParkingSlotDetails slotDetails;
+
 
     public ParkingLot(int CAPACITY)
     {
@@ -21,17 +23,18 @@ public class ParkingLot
         parkingMap = new LinkedHashMap<>();
         observerList = new ArrayList<>();
         parkingAttendant = new ParkingAttendant();
-        IntStream.rangeClosed(1, (CAPACITY)).forEach(slotNumber -> parkingMap.put(slotNumber, ParkingStatus.VACANT.message));
+        slotDetails = new ParkingSlotDetails();
+        IntStream.rangeClosed(1, (CAPACITY)).forEach(slotNumber -> parkingMap.put(slotNumber, slotDetails));
     }
 
     public void park(String carNumber)
     {
-        if (parkingMap.containsValue(carNumber))
+        if (this.isCarPresent(carNumber))
             throw new ParkingLotException(ParkingLotException.Type.SAME_CAR_NUMBER);
         this.parkingMap = parkingAttendant.parkCar(parkingMap, carNumber);
         if (parkingMap.size() > CAPACITY)
         {
-            parkingMap.values().removeIf(value -> value.contains(carNumber));
+            parkingMap.values().removeIf(value -> value.getCarNumber().equals(carNumber));
             this.parkingStatus = ParkingStatus.PARKING_FULL.message;
             this.informObservers();
         }
@@ -39,15 +42,15 @@ public class ParkingLot
 
     public boolean isCarPresent(String carNumber)
     {
-        return parkingMap.containsValue(carNumber);
+        return parkingMap.values()
+                .stream()
+                .anyMatch(value -> value.getCarNumber() == (carNumber));
     }
 
     public void unPark(String carNumber)
     {
-        if (!parkingMap.containsValue(carNumber))
-            throw new ParkingLotException(ParkingLotException.Type.CAR_NUMBER_MISMATCH);
         int slot = this.carLocation(carNumber);
-        parkingMap.put(slot, ParkingStatus.VACANT.message);
+        parkingMap.put(slot, slotDetails);
         if (parkingMap.size() <= CAPACITY)
         {
             this.parkingStatus = ParkingStatus.PARKING_IS_AVAILABLE.message;
@@ -57,12 +60,16 @@ public class ParkingLot
 
     public int carLocation(String carNumber)
     {
-        if (!parkingMap.containsValue(carNumber))
-            throw new ParkingLotException(ParkingLotException.Type.CAR_NUMBER_MISMATCH);
-        return parkingMap.keySet()
+        return this.getSlotDetails(carNumber).getSlotNumber();
+    }
+
+    private ParkingSlotDetails getSlotDetails(String carNumber)
+    {
+        return this.parkingMap.values()
                 .stream()
-                .filter(key -> carNumber.equals(parkingMap.get(key)))
-                .findFirst().get();
+                .filter(slot -> carNumber.equals(slot.getCarNumber()))
+                .findFirst()
+                .orElseThrow(() -> new ParkingLotException(ParkingLotException.Type.CAR_NUMBER_MISMATCH));
     }
 
     public void informObservers()
@@ -73,5 +80,10 @@ public class ParkingLot
     public void addParkingLotObservers(ParkingLotObserver... observer)
     {
         Collections.addAll(observerList, observer);
+    }
+
+    public String getParkedTime(String carNumber)
+    {
+        return this.getSlotDetails(carNumber).getParkedTime();
     }
 }

@@ -10,6 +10,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class ParkingLotTest
 {
     ParkingLot parkingLot;
@@ -43,7 +46,7 @@ public class ParkingLotTest
     }
 
     @Test
-    public void givenCarDetails_WhenProvidedToUnParkTheCar_ShouldReturnTrue()
+    public void givenCarDetails_WhenProvidedToUnParkTheCar_ShouldReturnFalse()
     {
         parkingLot.park("MH-32-AW-4348");
         parkingLot.unPark("MH-32-AW-4348");
@@ -120,7 +123,6 @@ public class ParkingLotTest
     {
         parkingLot.park("MH-32-AW-4348");
         parkingLot.park("MH-22-RT-2324");
-        parkingLot.park("MH-26-YU-8884");
         int slotNumber = parkingLot.carLocation("MH-22-RT-2324");
         Assert.assertEquals(2, slotNumber);
     }
@@ -139,5 +141,14 @@ public class ParkingLotTest
         {
             Assert.assertEquals(ParkingLotException.Type.CAR_NUMBER_MISMATCH, e.type);
         }
+    }
+
+    @Test
+    public void givenCarDetails_WhenAddedToParkingLot_ShouldReturnTimeOfParking()
+    {
+        parkingLot.park("MH-32-AW-4348");
+        String parkedTime = parkingLot.getParkedTime("MH-32-AW-4348");
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss");
+        Assert.assertEquals(LocalDateTime.now().format(format), parkedTime);
     }
 }
