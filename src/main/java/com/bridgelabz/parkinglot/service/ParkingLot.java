@@ -3,6 +3,7 @@ package com.bridgelabz.parkinglot.service;
 import com.bridgelabz.parkinglot.enums.ParkingStatus;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
 import com.bridgelabz.parkinglot.observer.ParkingLotObserver;
+import com.bridgelabz.parkinglot.utility.ParkingSlotDetails;
 
 import java.util.*;
 import java.util.stream.IntStream;
