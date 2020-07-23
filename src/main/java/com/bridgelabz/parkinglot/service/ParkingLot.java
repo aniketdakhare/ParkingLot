@@ -32,6 +32,7 @@ public class ParkingLot
         {
             this.parkingStatus = ParkingStatus.PARKING_FULL.message;
             this.informObservers();
+            return;
         }
         if (this.isCarPresent(carNumber))
             throw new ParkingLotException(ParkingLotException.Type.SAME_CAR_NUMBER);
