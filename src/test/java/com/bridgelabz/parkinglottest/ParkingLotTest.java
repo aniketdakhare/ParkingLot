@@ -179,6 +179,25 @@ public class ParkingLotTest
     }
 
     @Test
+    public void givenCarDetailsToParkingAttendant_WhenAllParkingLotsAreFull_ShouldGiveException()
+    {
+        try
+        {
+            ParkingAttendant parkingAttendant = new ParkingAttendant(2, 2);
+            parkingAttendant.parkCar("MH-22-RT-2324", DriverType.NORMAL_DRIVER);
+            parkingAttendant.parkCar("MH-26-YU-8884", DriverType.NORMAL_DRIVER);
+            parkingAttendant.parkCar("MH-14-OP-2222", DriverType.NORMAL_DRIVER);
+            parkingAttendant.parkCar("MH-33-KL-5454", DriverType.NORMAL_DRIVER);
+            parkingAttendant.parkCar("MH-35-SD-3333", DriverType.NORMAL_DRIVER);
+            parkingAttendant.parkCar("MH-32-AW-4348", DriverType.NORMAL_DRIVER);
+        }
+        catch (ParkingLotException e)
+        {
+            Assert.assertEquals(ParkingLotException.Type.LOTS_ARE_FULL, e.type);
+        }
+    }
+
+    @Test
     public void givenCarDetailsOfHandicapDriver_WhenParkedAtNearestLotWithFreeSpace_ShouldReturnLocationOfCar()
     {
         ParkingAttendant parkingAttendant = new ParkingAttendant(3, 3);

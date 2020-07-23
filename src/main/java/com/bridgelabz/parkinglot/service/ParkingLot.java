@@ -44,7 +44,7 @@ public class ParkingLot
     {
         return parkingMap.values()
                 .stream()
-                .anyMatch(value -> value.getCarNumber() == (carNumber));
+                .anyMatch(slot -> slot.getCarNumber() == (carNumber));
     }
 
     public void unPark(String carNumber)
