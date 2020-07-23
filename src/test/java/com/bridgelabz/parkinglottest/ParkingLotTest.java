@@ -176,4 +176,23 @@ public class ParkingLotTest
         String expectedLocation = "Parking Lot: 3  Parking Slot: 2";
         Assert.assertEquals(expectedLocation, carLocation);
     }
+
+    @Test
+    public void givenCarDetailsToParkingAttendant_WhenAllParkingLotsAreFull_ShouldGiveException()
+    {
+        try
+        {
+            ParkingAttendant parkingAttendant = new ParkingAttendant(2, 2);
+            parkingAttendant.parkCar("MH-22-RT-2324");
+            parkingAttendant.parkCar("MH-26-YU-8884");
+            parkingAttendant.parkCar("MH-14-OP-2222");
+            parkingAttendant.parkCar("MH-33-KL-5454");
+            parkingAttendant.parkCar("MH-35-SD-3333");
+            parkingAttendant.parkCar("MH-32-AW-4348");
+        }
+        catch (ParkingLotException e)
+        {
+            Assert.assertEquals(ParkingLotException.Type.LOTS_ARE_FULL, e.type);
+        }
+    }
 }

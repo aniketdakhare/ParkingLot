@@ -1,5 +1,7 @@
 package com.bridgelabz.parkinglot.service;
 
+import com.bridgelabz.parkinglot.exception.ParkingLotException;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -28,6 +30,10 @@ public class ParkingAttendant
 
     private ParkingLot getLotToPark()
     {
+        int totalCarsInAllLots = IntStream.range(0, totalParkingLots)
+                .map(i -> this.parkingLots.get(i).getCarCount()).sum();
+        if (totalCarsInAllLots >= (totalParkingSlots * totalParkingLots))
+            throw new ParkingLotException(ParkingLotException.Type.LOTS_ARE_FULL);
         List<ParkingLot> selectLot = new ArrayList<>(this.parkingLots);
         selectLot.sort(Comparator.comparing(ParkingLot::getCarCount));
         return selectLot.get(0);

@@ -27,17 +27,17 @@ public class ParkingLot
 
     public void park(String carNumber)
     {
+        if (carCount >= CAPACITY)
+        {
+            this.parkingStatus = ParkingStatus.PARKING_FULL.message;
+            this.informObservers();
+            return;
+        }
         if (this.isCarPresent(carNumber))
             throw new ParkingLotException(ParkingLotException.Type.SAME_CAR_NUMBER);
         int slotNumber = this.getSlotToPark(this.parkingMap);
         this.parkingMap.put(slotNumber, new ParkingSlotDetails(carNumber, slotNumber));
         carCount ++;
-        if (parkingMap.size() > CAPACITY)
-        {
-            parkingMap.values().removeIf(value -> value.getCarNumber().equals(carNumber));
-            this.parkingStatus = ParkingStatus.PARKING_FULL.message;
-            this.informObservers();
-        }
     }
 
     public boolean isCarPresent(String carNumber)
