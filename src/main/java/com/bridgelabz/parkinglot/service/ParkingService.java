@@ -7,13 +7,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class ParkingAttendant
+public class ParkingService
 {
     private int totalParkingLots;
     private int totalParkingSlots;
     public ArrayList<ParkingLot> parkingLots;
 
-    public ParkingAttendant(int slots, int lots)
+    public ParkingService(int slots, int lots)
     {
         this.totalParkingSlots = slots;
         this.totalParkingLots = lots;

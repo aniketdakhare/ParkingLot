@@ -5,7 +5,7 @@ import com.bridgelabz.parkinglot.exception.ParkingLotException;
 import com.bridgelabz.parkinglot.observer.AirportSecurity;
 import com.bridgelabz.parkinglot.observer.ParkingLotObserver;
 import com.bridgelabz.parkinglot.observer.ParkingOwner;
-import com.bridgelabz.parkinglot.service.ParkingAttendant;
+import com.bridgelabz.parkinglot.service.ParkingService;
 import com.bridgelabz.parkinglot.service.ParkingLot;
 import org.junit.Assert;
 import org.junit.Before;
@@ -156,23 +156,23 @@ public class ParkingLotTest
     @Test
     public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedLotAndSlot_ShouldReturnTrue()
     {
-        ParkingAttendant parkingAttendant = new ParkingAttendant(5, 3);
-        parkingAttendant.parkCar("MH-32-AW-4348");
-        boolean isPresent = parkingAttendant.isCarPresent("MH-32-AW-4348");
+        ParkingService parkingService = new ParkingService(5, 3);
+        parkingService.parkCar("MH-32-AW-4348");
+        boolean isPresent = parkingService.isCarPresent("MH-32-AW-4348");
         Assert.assertTrue(isPresent);
     }
 
     @Test
     public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedLotAndSlot_ShouldReturnLocationOfCar()
     {
-        ParkingAttendant parkingAttendant = new ParkingAttendant(5, 3);
-        parkingAttendant.parkCar("MH-22-RT-2324");
-        parkingAttendant.parkCar("MH-26-YU-8884");
-        parkingAttendant.parkCar("MH-14-OP-2222");
-        parkingAttendant.parkCar("MH-33-KL-5454");
-        parkingAttendant.parkCar("MH-35-SD-3333");
-        parkingAttendant.parkCar("MH-32-AW-4348");
-        String carLocation = parkingAttendant.getCarLocation("MH-32-AW-4348");
+        ParkingService parkingService = new ParkingService(5, 3);
+        parkingService.parkCar("MH-22-RT-2324");
+        parkingService.parkCar("MH-26-YU-8884");
+        parkingService.parkCar("MH-14-OP-2222");
+        parkingService.parkCar("MH-33-KL-5454");
+        parkingService.parkCar("MH-35-SD-3333");
+        parkingService.parkCar("MH-32-AW-4348");
+        String carLocation = parkingService.getCarLocation("MH-32-AW-4348");
         String expectedLocation = "Parking Lot: 3  Parking Slot: 2";
         Assert.assertEquals(expectedLocation, carLocation);
     }
@@ -182,13 +182,13 @@ public class ParkingLotTest
     {
         try
         {
-            ParkingAttendant parkingAttendant = new ParkingAttendant(2, 2);
-            parkingAttendant.parkCar("MH-22-RT-2324");
-            parkingAttendant.parkCar("MH-26-YU-8884");
-            parkingAttendant.parkCar("MH-14-OP-2222");
-            parkingAttendant.parkCar("MH-33-KL-5454");
-            parkingAttendant.parkCar("MH-35-SD-3333");
-            parkingAttendant.parkCar("MH-32-AW-4348");
+            ParkingService parkingService = new ParkingService(2, 2);
+            parkingService.parkCar("MH-22-RT-2324");
+            parkingService.parkCar("MH-26-YU-8884");
+            parkingService.parkCar("MH-14-OP-2222");
+            parkingService.parkCar("MH-33-KL-5454");
+            parkingService.parkCar("MH-35-SD-3333");
+            parkingService.parkCar("MH-32-AW-4348");
         }
         catch (ParkingLotException e)
         {
