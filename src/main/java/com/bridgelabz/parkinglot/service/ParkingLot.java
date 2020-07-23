@@ -3,6 +3,7 @@ package com.bridgelabz.parkinglot.service;
 import com.bridgelabz.parkinglot.enums.ParkingStatus;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
 import com.bridgelabz.parkinglot.observer.ParkingLotObserver;
+import com.bridgelabz.parkinglot.utility.ParkingSlotDetails;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -13,49 +14,57 @@ public class ParkingLot
     private final int CAPACITY;
     private String parkingStatus;
     private List<ParkingLotObserver> observerList;
-    private ParkingAttendant parkingAttendant;
     private ParkingSlotDetails slotDetails;
-
+    private int carCount = 0;
 
     public ParkingLot(int CAPACITY)
     {
         this.CAPACITY = CAPACITY;
         parkingMap = new LinkedHashMap<>();
         observerList = new ArrayList<>();
-        parkingAttendant = new ParkingAttendant();
         slotDetails = new ParkingSlotDetails();
         IntStream.rangeClosed(1, (CAPACITY)).forEach(slotNumber -> parkingMap.put(slotNumber, slotDetails));
     }
 
     public void park(String carNumber)
     {
-        if (this.isCarPresent(carNumber))
-            throw new ParkingLotException(ParkingLotException.Type.SAME_CAR_NUMBER);
-        this.parkingMap = parkingAttendant.parkCar(parkingMap, carNumber);
-        if (parkingMap.size() > CAPACITY)
+        if (carCount >= CAPACITY)
         {
-            parkingMap.values().removeIf(value -> value.getCarNumber().equals(carNumber));
             this.parkingStatus = ParkingStatus.PARKING_FULL.message;
             this.informObservers();
         }
+        if (this.isCarPresent(carNumber))
+            throw new ParkingLotException(ParkingLotException.Type.SAME_CAR_NUMBER);
+        int slotNumber = this.getSlotToPark();
+        this.parkingMap.put(slotNumber, new ParkingSlotDetails(carNumber, slotNumber));
+        carCount ++;
     }
 
     public boolean isCarPresent(String carNumber)
     {
         return parkingMap.values()
                 .stream()
-                .anyMatch(value -> value.getCarNumber() == (carNumber));
+                .anyMatch(slot -> slot.getCarNumber() == (carNumber));
     }
 
     public void unPark(String carNumber)
     {
         int slot = this.carLocation(carNumber);
         parkingMap.put(slot, slotDetails);
+        carCount --;
         if (parkingMap.size() <= CAPACITY)
         {
             this.parkingStatus = ParkingStatus.PARKING_IS_AVAILABLE.message;
             this.informObservers();
         }
+    }
+
+    public int getSlotToPark()
+    {
+        return this.parkingMap.keySet()
+                .stream()
+                .filter(slot -> parkingMap.get(slot).getCarNumber() == null)
+                .findFirst().orElse(0);
     }
 
     public int carLocation(String carNumber)

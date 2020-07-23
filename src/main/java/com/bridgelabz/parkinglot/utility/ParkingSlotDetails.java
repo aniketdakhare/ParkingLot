@@ -1,4 +1,4 @@
-package com.bridgelabz.parkinglot.service;
+package com.bridgelabz.parkinglot.utility;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
