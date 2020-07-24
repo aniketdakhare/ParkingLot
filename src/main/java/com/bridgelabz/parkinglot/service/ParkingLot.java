@@ -35,7 +35,7 @@ public class ParkingLot
             return;
         }
         if (this.isCarPresent(carNumber))
-            throw new ParkingLotException(ParkingLotException.Type.SAME_CAR_NUMBER);
+            throw new ParkingLotException(ParkingLotException.Type.DUPLICATE_CAR);
         int slotNumber = this.getSlotToPark(this.parkingMap);
         this.parkingMap.put(slotNumber, new ParkingSlotDetails(carNumber, slotNumber));
         carCount ++;

@@ -24,6 +24,8 @@ public class ParkingService
 
     public void parkCar(String carNumber)
     {
+        IntStream.range(0, totalParkingLots).filter(parkingLot -> parkingLots.get(parkingLot).isCarPresent(carNumber))
+                .forEach(i -> { throw new ParkingLotException(ParkingLotException.Type.DUPLICATE_CAR);});
         ParkingLot lot = getLotToPark();
         lot.park(carNumber);
     }
