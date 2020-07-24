@@ -7,6 +7,7 @@ import com.bridgelabz.parkinglot.observer.ParkingLotObserver;
 import com.bridgelabz.parkinglot.utility.ParkingSlotDetails;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ParkingLot
@@ -64,6 +65,14 @@ public class ParkingLot
     public int carLocation(Car car)
     {
         return this.getSlotDetails(car).getSlotNumber();
+    }
+
+    public List<Integer> getCarLocationBasedOnColour(String colour)
+    {
+        return this.parkingMap.values().stream().filter(parkingSlot -> parkingSlot.getCar() != null)
+            .filter(parkingSlot -> parkingSlot.getCar().carColour.equalsIgnoreCase(colour))
+            .map(ParkingSlotDetails::getSlotNumber)
+            .collect(Collectors.toList());
     }
 
     private ParkingSlotDetails getSlotDetails(Car car)

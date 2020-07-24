@@ -16,6 +16,8 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 public class ParkingLotTest
 {
@@ -32,7 +34,7 @@ public class ParkingLotTest
         car = new Car();
         firstCar = new Car("MH-32-AW-4348", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR);
         secondCar = new Car("MH-33-KL-5454", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR);
-        thirdCar = new Car("MH-32-AW-4348", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR);
+        thirdCar = new Car("MH-32-AW-4348", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "WHITE");
     }
 
     @Test
@@ -255,5 +257,24 @@ public class ParkingLotTest
         String carLocation = parkingService.getCarLocation(thirdCar);
         String expectedLocation = "Parking Lot: 2  Parking Slot: 3";
         Assert.assertEquals(expectedLocation, carLocation);
+    }
+
+    @Test
+    public void givenColourOfTheCar_WhenSearchedInAllParkingLots_ShouldReturnListOfLocationsOfCar()
+    {
+        Car firstWhiteCar = new Car("MH-26-YU-8884", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR, "WHITE");
+        Car secondWhiteCar = new Car("MH-18-OC-9922", DriverType.NORMAL_DRIVER, CarType.LARGE_CAR, "WHITE");
+        ParkingService parkingService = new ParkingService(6, 3);
+        parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "RED"));
+        parkingService.parkCar(new Car("MH-22-RT-2327", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "BLACK"));
+        parkingService.parkCar(firstWhiteCar);
+        parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE"));
+        parkingService.parkCar(secondWhiteCar);
+        parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW"));
+        parkingService.parkCar(thirdCar);
+        List<String> whiteCarsLocationList = parkingService.getLocationOfCarBasedOnColour("WHITE");
+        List<String> expectedListOfLocation = Arrays.asList(" Parking Lot: 1  Parking Slots: [2, 3]",
+                " Parking Lot: 2  Parking Slots: [2]", " Parking Lot: 3  Parking Slots: []");
+       Assert.assertEquals(expectedListOfLocation, whiteCarsLocationList);
     }
 }

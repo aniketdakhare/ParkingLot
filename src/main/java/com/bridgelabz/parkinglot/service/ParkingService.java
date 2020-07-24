@@ -1,7 +1,6 @@
 package com.bridgelabz.parkinglot.service;
 
 import com.bridgelabz.parkinglot.enums.CarType;
-import com.bridgelabz.parkinglot.enums.DriverType;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
 import com.bridgelabz.parkinglot.model.Car;
 
@@ -73,5 +72,15 @@ public class ParkingService
                 .findFirst().get();
         return String.format("Parking Lot: %d  Parking Slot: %d", parkingLots.indexOf(parkingLot) + 1,
                 parkingLot.carLocation(car));
+    }
+
+    public List<String> getLocationOfCarBasedOnColour(String colour)
+    {
+        List<String> listOfLocationsOfCar = new ArrayList<>();
+        this.parkingLots.forEach(lot -> {
+            List<Integer> carLocationBasedOnColour = lot.getCarLocationBasedOnColour(colour);
+            listOfLocationsOfCar.add(" Parking Lot: " + (this.parkingLots.indexOf(lot) + 1)
+                    + "  Parking Slots: " + carLocationBasedOnColour); });
+        return listOfLocationsOfCar;
     }
 }
