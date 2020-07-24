@@ -1,8 +1,10 @@
 package com.bridgelabz.parkinglottest;
 
+import com.bridgelabz.parkinglot.enums.CarType;
 import com.bridgelabz.parkinglot.enums.DriverType;
 import com.bridgelabz.parkinglot.enums.ParkingStatus;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
+import com.bridgelabz.parkinglot.model.Car;
 import com.bridgelabz.parkinglot.observer.AirportSecurity;
 import com.bridgelabz.parkinglot.observer.ParkingLotObserver;
 import com.bridgelabz.parkinglot.observer.ParkingOwner;
@@ -18,18 +20,26 @@ import java.time.format.DateTimeFormatter;
 public class ParkingLotTest
 {
     ParkingLot parkingLot;
+    Car car;
+    Car firstCar;
+    Car secondCar;
+    Car thirdCar;
 
     @Before
     public void setUp()
     {
         parkingLot = new ParkingLot(3);
+        car = new Car();
+        firstCar = new Car("MH-32-AW-4348", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR);
+        secondCar = new Car("MH-33-KL-5454", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR);
+        thirdCar = new Car("MH-32-AW-4348", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR);
     }
 
     @Test
     public void givenCarDetails_WhenAddedToParkingLot_ShouldReturnTrue()
     {
-        parkingLot.park("MH-32-AW-4348");
-        boolean isPresent = parkingLot.isCarPresent("MH-32-AW-4348");
+        parkingLot.park(car);
+        boolean isPresent = parkingLot.isCarPresent(car);
         Assert.assertTrue(isPresent);
     }
 
@@ -38,21 +48,21 @@ public class ParkingLotTest
     {
         try
         {
-            parkingLot.park("MH-32-AW-4348");
-            parkingLot.park("MH-32-AW-4348");
+            parkingLot.park(car);
+            parkingLot.park(car);
         }
         catch (ParkingLotException e)
         {
-            Assert.assertEquals(ParkingLotException.Type.SAME_CAR_NUMBER, e.type);
+            Assert.assertEquals(ParkingLotException.Type.DUPLICATE_CAR, e.type);
         }
     }
 
     @Test
     public void givenCarDetails_WhenProvidedToUnParkTheCar_ShouldReturnFalse()
     {
-        parkingLot.park("MH-32-AW-4348");
-        parkingLot.unPark("MH-32-AW-4348");
-        boolean isPresent = parkingLot.isCarPresent("MH-32-AW-4348");
+        parkingLot.park(car);
+        parkingLot.unPark(car);
+        boolean isPresent = parkingLot.isCarPresent(car);
         Assert.assertFalse(isPresent);
     }
 
@@ -61,12 +71,12 @@ public class ParkingLotTest
     {
         try
         {
-            parkingLot.park("MH-32-AW-4348");
-            parkingLot.unPark("MH-34-AW-7555");
+            parkingLot.park(car);
+            parkingLot.unPark(new Car());
         }
         catch (ParkingLotException e)
         {
-            Assert.assertEquals(ParkingLotException.Type.CAR_NUMBER_MISMATCH, e.type);
+            Assert.assertEquals(ParkingLotException.Type.CAR_DETAILS_MISMATCH, e.type);
         }
     }
 
@@ -75,10 +85,10 @@ public class ParkingLotTest
     {
         ParkingLotObserver owner = new ParkingOwner();
         parkingLot.addParkingLotObservers(owner);
-        parkingLot.park("MH-32-AW-4348");
-        parkingLot.park("MH-22-RT-2324");
-        parkingLot.park("MH-26-YU-8884");
-        parkingLot.park("MH-26-YU-4444");
+        parkingLot.park(car);
+        parkingLot.park(new Car());
+        parkingLot.park(new Car());
+        parkingLot.park(new Car());
         String status = owner.getParkingStatus();
         Assert.assertEquals(ParkingStatus.PARKING_FULL.message, status);
     }
@@ -89,10 +99,10 @@ public class ParkingLotTest
         ParkingLotObserver owner = new ParkingOwner();
         ParkingLotObserver airportSecurity = new AirportSecurity();
         parkingLot.addParkingLotObservers(owner, airportSecurity);
-        parkingLot.park("MH-32-AW-4348");
-        parkingLot.park("MH-22-RT-2324");
-        parkingLot.park("MH-26-YU-8884");
-        parkingLot.park("MH-26-YU-4444");
+        parkingLot.park(car);
+        parkingLot.park(new Car());
+        parkingLot.park(new Car());
+        parkingLot.park(new Car());
         String ownerStatus = owner.getParkingStatus();
         String airportSecurityStatus = airportSecurity.getParkingStatus();
         Assert.assertEquals(ParkingStatus.PARKING_FULL.message, airportSecurityStatus);
@@ -104,10 +114,10 @@ public class ParkingLotTest
     {
         ParkingLotObserver owner = new ParkingOwner();
         parkingLot.addParkingLotObservers(owner);
-        parkingLot.park("MH-32-AW-4348");
-        parkingLot.park("MH-22-RT-2324");
-        parkingLot.park("MH-26-YU-8884");
-        parkingLot.unPark("MH-22-RT-2324");
+        parkingLot.park(car);
+        parkingLot.park(new Car());
+        parkingLot.park(new Car());
+        parkingLot.unPark(car);
         String status = owner.getParkingStatus();
         Assert.assertEquals(ParkingStatus.PARKING_IS_AVAILABLE.message, status);
     }
@@ -115,18 +125,18 @@ public class ParkingLotTest
     @Test
     public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedSlot_ShouldReturnTrue()
     {
-        parkingLot.park("MH-32-AW-4348");
-        boolean isPresent = parkingLot.isCarPresent("MH-32-AW-4348");
+        parkingLot.park(car);
+        boolean isPresent = parkingLot.isCarPresent(car);
         Assert.assertTrue(isPresent);
     }
 
     @Test
     public void givenCarDetails_WhenProvidedToGetCarLocation_ShouldReturnParkingSlotNumber()
     {
-        parkingLot.park("MH-32-AW-4348");
-        parkingLot.park("MH-22-RT-2324");
-        int slotNumber = parkingLot.carLocation("MH-22-RT-2324");
-        Assert.assertEquals(2, slotNumber);
+        parkingLot.park(car);
+        parkingLot.park(new Car());
+        int slotNumber = parkingLot.carLocation(car);
+        Assert.assertEquals(1, slotNumber);
     }
 
     @Test
@@ -134,22 +144,22 @@ public class ParkingLotTest
     {
         try
         {
-            parkingLot.park("MH-32-AW-4348");
-            parkingLot.park("MH-22-RT-2324");
-            parkingLot.park("MH-26-YU-8884");
-            parkingLot.carLocation("MH-22-RT-2325");
+            parkingLot.park(car);
+            parkingLot.park(new Car());
+            parkingLot.park(new Car());
+            parkingLot.carLocation(new Car());
         }
         catch (ParkingLotException e)
         {
-            Assert.assertEquals(ParkingLotException.Type.CAR_NUMBER_MISMATCH, e.type);
+            Assert.assertEquals(ParkingLotException.Type.CAR_DETAILS_MISMATCH, e.type);
         }
     }
 
     @Test
     public void givenCarDetails_WhenAddedToParkingLot_ShouldReturnTimeOfParking()
     {
-        parkingLot.park("MH-32-AW-4348");
-        String parkedTime = parkingLot.getParkedTime("MH-32-AW-4348");
+        parkingLot.park(car);
+        String parkedTime = parkingLot.getParkedTime(car);
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss");
         Assert.assertEquals(LocalDateTime.now().format(format), parkedTime);
     }
@@ -158,8 +168,8 @@ public class ParkingLotTest
     public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedLotAndSlot_ShouldReturnTrue()
     {
         ParkingService parkingService = new ParkingService(5, 3);
-        parkingService.parkCar("MH-32-AW-4348", DriverType.NORMAL_DRIVER);
-        boolean isPresent = parkingService.isCarPresent("MH-32-AW-4348");
+        parkingService.parkCar(firstCar);
+        boolean isPresent = parkingService.isCarPresent(firstCar);
         Assert.assertTrue(isPresent);
     }
 
@@ -167,13 +177,13 @@ public class ParkingLotTest
     public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedLotAndSlot_ShouldReturnLocationOfCar()
     {
         ParkingService parkingService = new ParkingService(5, 3);
-        parkingService.parkCar("MH-22-RT-2324", DriverType.NORMAL_DRIVER);
-        parkingService.parkCar("MH-26-YU-8884", DriverType.NORMAL_DRIVER);
-        parkingService.parkCar("MH-14-OP-2222", DriverType.NORMAL_DRIVER);
-        parkingService.parkCar("MH-33-KL-5454", DriverType.NORMAL_DRIVER);
-        parkingService.parkCar("MH-35-SD-3333", DriverType.NORMAL_DRIVER);
-        parkingService.parkCar("MH-32-AW-4348", DriverType.NORMAL_DRIVER);
-        String carLocation = parkingService.getCarLocation("MH-32-AW-4348");
+        parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-26-YU-8884", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-33-KL-5454", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-35-SD-3333", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(firstCar);
+        String carLocation = parkingService.getCarLocation(firstCar);
         String expectedLocation = "Parking Lot: 3  Parking Slot: 2";
         Assert.assertEquals(expectedLocation, carLocation);
     }
@@ -184,12 +194,12 @@ public class ParkingLotTest
         try
         {
             ParkingService parkingService = new ParkingService(2, 2);
-            parkingService.parkCar("MH-22-RT-2324", DriverType.NORMAL_DRIVER);
-            parkingService.parkCar("MH-26-YU-8884", DriverType.NORMAL_DRIVER);
-            parkingService.parkCar("MH-14-OP-2222", DriverType.NORMAL_DRIVER);
-            parkingService.parkCar("MH-33-KL-5454", DriverType.NORMAL_DRIVER);
-            parkingService.parkCar("MH-35-SD-3333", DriverType.NORMAL_DRIVER);
-            parkingService.parkCar("MH-32-AW-4348", DriverType.NORMAL_DRIVER);
+            parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+            parkingService.parkCar(new Car("MH-26-YU-8884", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+            parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+            parkingService.parkCar(new Car("MH-33-KL-5454", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+            parkingService.parkCar(new Car("MH-35-SD-3333", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+            parkingService.parkCar(firstCar);
         }
         catch (ParkingLotException e)
         {
@@ -198,17 +208,32 @@ public class ParkingLotTest
     }
 
     @Test
+    public void givenSameCarDetailsTwiceToParkingAttendant_WhenTriedToGetParked_ShouldGiveException()
+    {
+        try
+        {
+            ParkingService parkingService = new ParkingService(2, 2);
+            parkingService.parkCar(firstCar);
+            parkingService.parkCar(firstCar);
+        }
+        catch (ParkingLotException e)
+        {
+            Assert.assertEquals(ParkingLotException.Type.DUPLICATE_CAR, e.type);
+        }
+    }
+
+    @Test
     public void givenCarDetailsOfHandicapDriver_WhenParkedAtNearestLotWithFreeSpace_ShouldReturnLocationOfCar()
     {
         ParkingService parkingService = new ParkingService(3, 3);
-        parkingService.parkCar("MH-22-RT-2324", DriverType.NORMAL_DRIVER);
-        parkingService.parkCar("MH-26-YU-8884", DriverType.HANDICAP_DRIVER);
-        parkingService.parkCar("MH-14-OP-2222", DriverType.HANDICAP_DRIVER);
-        parkingService.parkCar("MH-18-OC-9922", DriverType.NORMAL_DRIVER);
-        parkingService.parkCar("MH-33-KL-5454", DriverType.HANDICAP_DRIVER);
-        parkingService.parkCar("MH-35-SD-3333", DriverType.NORMAL_DRIVER);
-        parkingService.parkCar("MH-32-AW-4348", DriverType.HANDICAP_DRIVER);
-        String carLocation = parkingService.getCarLocation("MH-33-KL-5454");
+        parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-26-YU-8884", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-18-OC-9922", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(secondCar);
+        parkingService.parkCar(new Car("MH-35-SD-3333", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(firstCar);
+        String carLocation = parkingService.getCarLocation(secondCar);
         String expectedLocation = "Parking Lot: 2  Parking Slot: 2";
         Assert.assertEquals(expectedLocation, carLocation);
     }

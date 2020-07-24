@@ -1,18 +1,20 @@
 package com.bridgelabz.parkinglot.utility;
 
+import com.bridgelabz.parkinglot.model.Car;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ParkingSlotDetails
 {
-    private  String carNumber;
+    private Car car;
     private String time;
     private int slotNumber;
     private DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss");
 
-    public ParkingSlotDetails(String carNumber, int slotNumber)
+    public ParkingSlotDetails(Car car, int slotNumber)
     {
-        this.carNumber = carNumber;
+        this.car = car;
         this.slotNumber = slotNumber;
         this.time = LocalDateTime.now().format(format);
     }
@@ -24,9 +26,9 @@ public class ParkingSlotDetails
         return time;
     }
 
-    public String getCarNumber()
+    public Car getCar()
     {
-        return carNumber;
+        return car;
     }
 
     public int getSlotNumber()
@@ -40,7 +42,7 @@ public class ParkingSlotDetails
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ParkingSlotDetails that = (ParkingSlotDetails) o;
-        return carNumber.equals(that.carNumber) &&
+        return car.equals(that.car) &&
                 time.equals(that.time);
     }
 }

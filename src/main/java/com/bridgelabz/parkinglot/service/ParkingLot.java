@@ -2,6 +2,7 @@ package com.bridgelabz.parkinglot.service;
 
 import com.bridgelabz.parkinglot.enums.ParkingStatus;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
+import com.bridgelabz.parkinglot.model.Car;
 import com.bridgelabz.parkinglot.observer.ParkingLotObserver;
 import com.bridgelabz.parkinglot.utility.ParkingSlotDetails;
 
@@ -26,7 +27,7 @@ public class ParkingLot
         IntStream.rangeClosed(1, (CAPACITY)).forEach(slotNumber -> parkingMap.put(slotNumber, slotDetails));
     }
 
-    public void park(String carNumber)
+    public void park(Car car)
     {
         if (carCount >= CAPACITY)
         {
@@ -34,23 +35,23 @@ public class ParkingLot
             this.informObservers();
             return;
         }
-        if (this.isCarPresent(carNumber))
-            throw new ParkingLotException(ParkingLotException.Type.SAME_CAR_NUMBER);
+        if (this.isCarPresent(car))
+            throw new ParkingLotException(ParkingLotException.Type.DUPLICATE_CAR);
         int slotNumber = this.getSlotToPark(this.parkingMap);
-        this.parkingMap.put(slotNumber, new ParkingSlotDetails(carNumber, slotNumber));
+        this.parkingMap.put(slotNumber, new ParkingSlotDetails(car, slotNumber));
         carCount ++;
     }
 
-    public boolean isCarPresent(String carNumber)
+    public boolean isCarPresent(Car car)
     {
         return parkingMap.values()
                 .stream()
-                .anyMatch(slot -> slot.getCarNumber() == (carNumber));
+                .anyMatch(slot -> slot.getCar() == (car));
     }
 
-    public void unPark(String carNumber)
+    public void unPark(Car car)
     {
-        int slot = this.carLocation(carNumber);
+        int slot = this.carLocation(car);
         parkingMap.put(slot, slotDetails);
         if (parkingMap.size() <= CAPACITY)
         {
@@ -60,26 +61,26 @@ public class ParkingLot
         carCount --;
     }
 
-    public int carLocation(String carNumber)
+    public int carLocation(Car car)
     {
-        return this.getSlotDetails(carNumber).getSlotNumber();
+        return this.getSlotDetails(car).getSlotNumber();
     }
 
-    private ParkingSlotDetails getSlotDetails(String carNumber)
+    private ParkingSlotDetails getSlotDetails(Car car)
     {
         return this.parkingMap.values()
                 .stream()
-                .filter(slot -> carNumber.equals(slot.getCarNumber()))
+                .filter(slot -> car.equals(slot.getCar()))
                 .findFirst()
-                .orElseThrow(() -> new ParkingLotException(ParkingLotException.Type.CAR_NUMBER_MISMATCH));
+                .orElseThrow(() -> new ParkingLotException(ParkingLotException.Type.CAR_DETAILS_MISMATCH));
     }
 
     public int getSlotToPark(Map<Integer, ParkingSlotDetails> parkingMap)
     {
         return parkingMap.keySet()
                 .stream()
-                .filter(slot -> parkingMap.get(slot).getCarNumber() == null)
-                .findFirst().orElse(0);
+                .filter(slot -> parkingMap.get(slot).getCar() == null)
+                .findFirst().get();
     }
 
     public void informObservers()
@@ -92,9 +93,9 @@ public class ParkingLot
         Collections.addAll(observerList, observer);
     }
 
-    public String getParkedTime(String carNumber)
+    public String getParkedTime(Car car)
     {
-        return this.getSlotDetails(carNumber).getParkedTime();
+        return this.getSlotDetails(car).getParkedTime();
     }
 
     public int getCarCount()

@@ -4,8 +4,8 @@ public class ParkingLotException extends RuntimeException
 {
     public enum Type
     {
-        CAR_NUMBER_MISMATCH("Car for a given car number is not found."),
-        SAME_CAR_NUMBER("Car cannot be parked as car number is same"),
+        CAR_DETAILS_MISMATCH("Car for a given car details is not found."),
+        DUPLICATE_CAR("Car cannot be parked as given car is already present"),
         LOTS_ARE_FULL("All parking lots are full");
 
         String message;
