@@ -43,7 +43,7 @@ public class ParkingLotTest
         }
         catch (ParkingLotException e)
         {
-            Assert.assertEquals(ParkingLotException.Type.SAME_CAR_NUMBER, e.type);
+            Assert.assertEquals(ParkingLotException.Type.DUPLICATE_CAR, e.type);
         }
     }
 
@@ -194,6 +194,22 @@ public class ParkingLotTest
         catch (ParkingLotException e)
         {
             Assert.assertEquals(ParkingLotException.Type.LOTS_ARE_FULL, e.type);
+        }
+    }
+
+    @Test
+    public void givenSameCarDetailsTwiceToParkingAttendant_WhenTriedToGetParkedDifferentLots_ShouldGiveException()
+    {
+        try
+        {
+            ParkingService parkingService = new ParkingService(2, 2);
+            parkingService.parkCar("MH-14-OP-2222", DriverType.NORMAL_DRIVER);
+            parkingService.parkCar("MH-14-OP-2222", DriverType.NORMAL_DRIVER);
+
+        }
+        catch (ParkingLotException e)
+        {
+            Assert.assertEquals(ParkingLotException.Type.DUPLICATE_CAR, e.type);
         }
     }
 
