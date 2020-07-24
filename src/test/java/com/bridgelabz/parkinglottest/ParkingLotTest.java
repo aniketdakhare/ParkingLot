@@ -178,21 +178,24 @@ public class ParkingLotTest
     @Test
     public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedLotAndSlot_ShouldReturnLocationOfCar()
     {
+        Car car1 = new Car("MH-26-YU-8884", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR);
         ParkingService parkingService = new ParkingService(5, 3);
         parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
-        parkingService.parkCar(new Car("MH-26-YU-8884", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(car1);
         parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
         parkingService.parkCar(new Car("MH-33-KL-5454", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.unParkCar(car1);
         parkingService.parkCar(new Car("MH-35-SD-3333", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
         parkingService.parkCar(firstCar);
         String carLocation = parkingService.getCarLocation(firstCar);
-        String expectedLocation = "Parking Lot: 3  Parking Slot: 2";
+        String expectedLocation = "Parking Lot: 2  Parking Slot: 2";
         Assert.assertEquals(expectedLocation, carLocation);
     }
 
     @Test
     public void givenCarDetailsToParkingAttendant_WhenAllParkingLotsAreFull_ShouldGiveException()
     {
+        Car car1 = new Car("MH-26-YU-8884", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR);
         try
         {
             ParkingService parkingService = new ParkingService(2, 2);

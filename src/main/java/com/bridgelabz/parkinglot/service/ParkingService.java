@@ -32,6 +32,12 @@ public class ParkingService
         lot.park(car);
     }
 
+    public void unParkCar(Car car)
+    {
+        ParkingLot parkingLot = this.getParkingLotOfParkedCar(car);
+        parkingLot.unPark(car);
+    }
+
     private ParkingLot getLotToPark(Car car)
     {
         int totalCarsInAllLots = IntStream.range(0, totalParkingLots)
@@ -65,11 +71,16 @@ public class ParkingService
         return this.parkingLots.stream().anyMatch(lot -> lot.isCarPresent(car));
     }
 
+    private ParkingLot getParkingLotOfParkedCar(Car car)
+    {
+        return this.parkingLots.stream()
+            .filter(lot -> lot.isCarPresent(car))
+            .findFirst().get();
+    }
+
     public String getCarLocation(Car car)
     {
-        ParkingLot parkingLot = this.parkingLots.stream()
-                .filter(lot -> lot.isCarPresent(car))
-                .findFirst().get();
+        ParkingLot parkingLot = this.getParkingLotOfParkedCar(car);
         return String.format("Parking Lot: %d  Parking Slot: %d", parkingLots.indexOf(parkingLot) + 1,
                 parkingLot.carLocation(car));
     }
