@@ -32,7 +32,7 @@ public class ParkingLotTest
         car = new Car();
         firstCar = new Car("MH-32-AW-4348", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR);
         secondCar = new Car("MH-33-KL-5454", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR);
-        thirdCar = new Car("MH-32-AW-4348", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR);
+        thirdCar = new Car("MH-32-AW-4348", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR);
     }
 
     @Test
@@ -235,6 +235,25 @@ public class ParkingLotTest
         parkingService.parkCar(firstCar);
         String carLocation = parkingService.getCarLocation(secondCar);
         String expectedLocation = "Parking Lot: 2  Parking Slot: 2";
+        Assert.assertEquals(expectedLocation, carLocation);
+    }
+
+    @Test
+    public void givenCarDetailsOfLargeVehicle_WhenParkedAtLotWithHighestNumberOfFreeSpace_ShouldReturnLocationOfCar()
+    {
+        ParkingService parkingService = new ParkingService(6, 3);
+        parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-22-RT-2327", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-26-YU-8884", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR));
+        parkingService.parkCar(new Car("MH-18-OC-9922", DriverType.NORMAL_DRIVER, CarType.LARGE_CAR));
+        parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(secondCar);
+        parkingService.parkCar(thirdCar);
+        parkingService.parkCar(new Car("MH-35-SD-3333", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(firstCar);
+        String carLocation = parkingService.getCarLocation(thirdCar);
+        String expectedLocation = "Parking Lot: 2  Parking Slot: 3";
         Assert.assertEquals(expectedLocation, carLocation);
     }
 }

@@ -1,5 +1,6 @@
 package com.bridgelabz.parkinglot.service;
 
+import com.bridgelabz.parkinglot.enums.CarType;
 import com.bridgelabz.parkinglot.enums.DriverType;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
 import com.bridgelabz.parkinglot.model.Car;
@@ -28,29 +29,33 @@ public class ParkingService
     {
         IntStream.range(0, totalParkingLots).filter(parkingLot -> parkingLots.get(parkingLot).isCarPresent(car))
                 .forEach(i -> { throw new ParkingLotException(ParkingLotException.Type.DUPLICATE_CAR);});
-        ParkingLot lot = getLotToPark(car.driverType);
+        ParkingLot lot = getLotToPark(car);
         lot.park(car);
     }
 
-    private ParkingLot getLotToPark(DriverType driverType)
+    private ParkingLot getLotToPark(Car car)
     {
         int totalCarsInAllLots = IntStream.range(0, totalParkingLots)
-                .map(i -> this.parkingLots.get(i).getCarCount()).sum();
+                .map(lot -> this.parkingLots.get(lot).getCarCount()).sum();
         if (totalCarsInAllLots >= (totalParkingSlots * totalParkingLots))
             throw new ParkingLotException(ParkingLotException.Type.LOTS_ARE_FULL);
         ParkingLot parkingLot = null;
         List<ParkingLot> selectLot = new ArrayList<>(this.parkingLots);
-        switch (driverType)
+        switch (car.driverType)
         {
             case NORMAL_DRIVER:
                 selectLot.sort(Comparator.comparing(ParkingLot::getCarCount));
                 parkingLot = selectLot.get(0);
                 break;
             case HANDICAP_DRIVER:
-                int i = 0;
-                if (selectLot.get(i).getCarCount() == totalParkingSlots)
-                    i++;
-                parkingLot = selectLot.get(i);
+                int lot = 0;
+                if (car.carType.equals(CarType.LARGE_CAR))
+                {
+                    selectLot.sort(Comparator.comparing(ParkingLot::getCarCount));
+                }
+                if (selectLot.get(lot).getCarCount() == totalParkingSlots)
+                    lot++;
+                parkingLot = selectLot.get(lot);
                 break;
         }
         return parkingLot;
