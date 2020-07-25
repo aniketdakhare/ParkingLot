@@ -393,4 +393,18 @@ public class ParkingLotTest
                 "( Parking Lot: 3, Parking Slot: 1, Plate Number: MH-12-UC-4322 )");
         Assert.assertEquals(expectedListOfLocation, carsLocationList);
     }
+
+    @Test
+    public void forGivenTimeRangeForParkedCars_WhenNoCarIsPresentInAnyOfTheParkingLot_ShouldGiveException()
+    {
+        try
+        {
+            ParkingService parkingService = new ParkingService(6, 3, attendantNames);
+            parkingService.getParkingDetailsOfCarWithInProvidedRange(30);
+        }
+        catch (ParkingLotException e)
+        {
+            Assert.assertEquals(ParkingLotException.Type.NO_CAR_PARKED, e.type);
+        }
+    }
 }

@@ -133,6 +133,8 @@ public class ParkingService
                                 ", Parking Slot: " + location.getSlotNumber() +
                                 ", Plate Number: " + location.getCar().carNumber + " )")
                         .forEach(listOfParkingDetailsOfCar::add));
+        if (listOfParkingDetailsOfCar.isEmpty())
+            throw new ParkingLotException(ParkingLotException.Type.NO_CAR_PARKED);
         return listOfParkingDetailsOfCar;
     }
 }
