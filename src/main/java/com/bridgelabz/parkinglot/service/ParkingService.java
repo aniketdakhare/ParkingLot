@@ -93,10 +93,12 @@ public class ParkingService
                 .forEachOrdered(carLocationBasedOnColour -> carLocationBasedOnColour.stream()
                         .map(location -> "Parking Lot: " + (location.getParkingLotNumber() + 1)
                 + "  Parking Slot: " + location.getSlotNumber()).forEach(listOfLocationsOfCar::add));
+        if (listOfLocationsOfCar.isEmpty())
+            throw new ParkingLotException(ParkingLotException.Type.NO_SUCH_CAR_PRESENT);
         return listOfLocationsOfCar;
     }
 
-    public List<String> getParkingDetailsOfCarBasedOnColour(String colour, String companyName)
+    public List<String> getParkingDetailsOfCarBasedOnColourAndCompany(String colour, String companyName)
     {
         List<String> listOfParkingDetailsOfCar = new ArrayList<>();
         this.parkingLots.forEach(lot -> {
@@ -105,6 +107,8 @@ public class ParkingService
             carsParkingDetails.stream().map(details -> "( Parking Lot: " + (details.getParkingLotNumber() + 1)
                     + ", Parking Slot: " + details.getSlotNumber() + ", Plate Number: " + details.getCar().carNumber
                     + ", Attendant Name: " + details.getAttendantName() + " )").forEach(listOfParkingDetailsOfCar::add); });
+        if (listOfParkingDetailsOfCar.isEmpty())
+            throw new ParkingLotException(ParkingLotException.Type.NO_SUCH_CAR_PRESENT);
         return listOfParkingDetailsOfCar;
     }
 }
