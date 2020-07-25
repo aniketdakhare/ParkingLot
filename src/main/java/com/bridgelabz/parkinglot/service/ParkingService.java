@@ -93,6 +93,8 @@ public class ParkingService
                 .forEachOrdered(carLocationBasedOnColour -> carLocationBasedOnColour.stream()
                         .map(location -> "Parking Lot: " + (location.getParkingLotNumber() + 1)
                 + "  Parking Slot: " + location.getSlotNumber()).forEach(listOfLocationsOfCar::add));
+        if (listOfLocationsOfCar.isEmpty())
+            throw new ParkingLotException(ParkingLotException.Type.NO_SUCH_CAR_PRESENT);
         return listOfLocationsOfCar;
     }
 
