@@ -9,6 +9,7 @@ public class Car
     public DriverType driverType;
     public CarType carType;
     public String carColour;
+    public String carCompany;
 
     public Car(String carNumber, DriverType driverType, CarType carType)
     {
@@ -25,5 +26,14 @@ public class Car
         this.driverType = driverType;
         this.carType = carType;
         this.carColour = carColour;
+    }
+
+    public Car(String carNumber, DriverType driverType, CarType carType, String carColour, String carCompany)
+    {
+        this.carNumber = carNumber;
+        this.driverType = driverType;
+        this.carType = carType;
+        this.carColour = carColour;
+        this.carCompany = carCompany;
     }
 }

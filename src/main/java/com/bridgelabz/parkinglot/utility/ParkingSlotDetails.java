@@ -10,13 +10,17 @@ public class ParkingSlotDetails
     private Car car;
     private String time;
     private int slotNumber;
+    private int parkingLotNumber;
+    private String attendantName;
     private DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss");
 
-    public ParkingSlotDetails(Car car, int slotNumber)
+    public ParkingSlotDetails(Car car, int slotNumber, int parkingLotNumber, String attendantName)
     {
         this.car = car;
-        this.slotNumber = slotNumber;
         this.time = LocalDateTime.now().format(format);
+        this.slotNumber = slotNumber;
+        this.parkingLotNumber = parkingLotNumber;
+        this.attendantName =attendantName;
     }
 
     public ParkingSlotDetails() { }
@@ -36,13 +40,13 @@ public class ParkingSlotDetails
         return slotNumber;
     }
 
-    @Override
-    public boolean equals(Object o)
+    public int getParkingLotNumber()
     {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ParkingSlotDetails that = (ParkingSlotDetails) o;
-        return car.equals(that.car) &&
-                time.equals(that.time);
+        return parkingLotNumber;
+    }
+
+    public String getAttendantName()
+    {
+        return attendantName;
     }
 }

@@ -14,21 +14,23 @@ public class ParkingLot
 {
     private Map<Integer, ParkingSlotDetails> parkingMap;
     private final int CAPACITY;
+    private final String attendantName;
     private String parkingStatus;
     private int carCount = 0;
     private List<ParkingLotObserver> observerList;
     private ParkingSlotDetails slotDetails;
 
-    public ParkingLot(int CAPACITY)
+    public ParkingLot(int CAPACITY, String attendantName)
     {
         this.CAPACITY = CAPACITY;
+        this.attendantName = attendantName;
         parkingMap = new LinkedHashMap<>();
         observerList = new ArrayList<>();
         slotDetails = new ParkingSlotDetails();
         IntStream.rangeClosed(1, (CAPACITY)).forEach(slotNumber -> parkingMap.put(slotNumber, slotDetails));
     }
 
-    public void park(Car car)
+    public void park(Car car, int parkingLotNumber)
     {
         if (carCount >= CAPACITY)
         {
@@ -39,7 +41,7 @@ public class ParkingLot
         if (this.isCarPresent(car))
             throw new ParkingLotException(ParkingLotException.Type.DUPLICATE_CAR);
         int slotNumber = this.getSlotToPark(this.parkingMap);
-        this.parkingMap.put(slotNumber, new ParkingSlotDetails(car, slotNumber));
+        this.parkingMap.put(slotNumber, new ParkingSlotDetails(car, slotNumber, parkingLotNumber, attendantName));
         carCount ++;
     }
 
@@ -67,12 +69,18 @@ public class ParkingLot
         return this.getSlotDetails(car).getSlotNumber();
     }
 
-    public List<Integer> getCarLocationBasedOnColour(String colour)
+    public List<ParkingSlotDetails> getCarsParkingDetailsBasedOnColour(String colour)
     {
         return this.parkingMap.values().stream().filter(parkingSlot -> parkingSlot.getCar() != null)
             .filter(parkingSlot -> parkingSlot.getCar().carColour.equalsIgnoreCase(colour))
-            .map(ParkingSlotDetails::getSlotNumber)
             .collect(Collectors.toList());
+    }
+
+    public List<ParkingSlotDetails> getCarsParkingDetailsBasedOnCarCompany(String companyName)
+    {
+        return this.parkingMap.values().stream().filter(parkingSlot -> parkingSlot.getCar() != null)
+                .filter(parkingSlot -> parkingSlot.getCar().carCompany.equalsIgnoreCase(companyName))
+                .collect(Collectors.toList());
     }
 
     private ParkingSlotDetails getSlotDetails(Car car)

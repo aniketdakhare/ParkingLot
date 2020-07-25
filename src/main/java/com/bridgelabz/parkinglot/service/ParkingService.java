@@ -3,6 +3,7 @@ package com.bridgelabz.parkinglot.service;
 import com.bridgelabz.parkinglot.enums.CarType;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
 import com.bridgelabz.parkinglot.model.Car;
+import com.bridgelabz.parkinglot.utility.ParkingSlotDetails;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -13,15 +14,15 @@ public class ParkingService
 {
     private int totalParkingLots;
     private int totalParkingSlots;
-    public ArrayList<ParkingLot> parkingLots;
+    private ArrayList<ParkingLot> parkingLots;
 
-    public ParkingService(int slots, int lots)
+    public ParkingService(int slots, int lots, String... attendantNames)
     {
         this.totalParkingSlots = slots;
         this.totalParkingLots = lots;
         this.parkingLots = new ArrayList<>();
         IntStream.range(0, totalParkingLots)
-                .forEach(lotNumber -> parkingLots.add(new ParkingLot(totalParkingSlots)));
+                .forEach(lotNumber -> parkingLots.add(new ParkingLot(totalParkingSlots, attendantNames[lotNumber])));
     }
 
     public void parkCar(Car car)
@@ -29,7 +30,7 @@ public class ParkingService
         IntStream.range(0, totalParkingLots).filter(parkingLot -> parkingLots.get(parkingLot).isCarPresent(car))
                 .forEach(i -> { throw new ParkingLotException(ParkingLotException.Type.DUPLICATE_CAR);});
         ParkingLot lot = getLotToPark(car);
-        lot.park(car);
+        lot.park(car, parkingLots.indexOf(lot));
     }
 
     public void unParkCar(Car car)
@@ -88,10 +89,22 @@ public class ParkingService
     public List<String> getLocationOfCarBasedOnColour(String colour)
     {
         List<String> listOfLocationsOfCar = new ArrayList<>();
-        this.parkingLots.forEach(lot -> {
-            List<Integer> carLocationBasedOnColour = lot.getCarLocationBasedOnColour(colour);
-            listOfLocationsOfCar.add(" Parking Lot: " + (this.parkingLots.indexOf(lot) + 1)
-                    + "  Parking Slots: " + carLocationBasedOnColour); });
+        this.parkingLots.stream().map(lot -> lot.getCarsParkingDetailsBasedOnColour(colour))
+                .forEachOrdered(carLocationBasedOnColour -> carLocationBasedOnColour.stream()
+                        .map(location -> "Parking Lot: " + (location.getParkingLotNumber() + 1)
+                + "  Parking Slot: " + location.getSlotNumber()).forEach(listOfLocationsOfCar::add));
         return listOfLocationsOfCar;
+    }
+
+    public List<String> getParkingDetailsOfCarBasedOnColour(String colour, String companyName)
+    {
+        List<String> listOfParkingDetailsOfCar = new ArrayList<>();
+        this.parkingLots.forEach(lot -> {
+            List<ParkingSlotDetails> carsParkingDetails = new ArrayList<>(lot.getCarsParkingDetailsBasedOnColour(colour));
+            carsParkingDetails.retainAll(lot.getCarsParkingDetailsBasedOnCarCompany(companyName));
+            carsParkingDetails.stream().map(details -> "( Parking Lot: " + (details.getParkingLotNumber() + 1)
+                    + ", Parking Slot: " + details.getSlotNumber() + ", Plate Number: " + details.getCar().carNumber
+                    + ", Attendant Name: " + details.getAttendantName() + " )").forEach(listOfParkingDetailsOfCar::add); });
+        return listOfParkingDetailsOfCar;
     }
 }

@@ -26,11 +26,13 @@ public class ParkingLotTest
     Car firstCar;
     Car secondCar;
     Car thirdCar;
+    String[] attendantNames;
 
     @Before
     public void setUp()
     {
-        parkingLot = new ParkingLot(3);
+        attendantNames = new String[]{"FirstAttendant", "SecondAttendant", "ThirdAttendant"};
+        parkingLot = new ParkingLot(3, "Aniket");
         car = new Car();
         firstCar = new Car("MH-32-AW-4348", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR);
         secondCar = new Car("MH-33-KL-5454", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR);
@@ -40,7 +42,7 @@ public class ParkingLotTest
     @Test
     public void givenCarDetails_WhenAddedToParkingLot_ShouldReturnTrue()
     {
-        parkingLot.park(car);
+        parkingLot.park(car, 1);
         boolean isPresent = parkingLot.isCarPresent(car);
         Assert.assertTrue(isPresent);
     }
@@ -50,8 +52,8 @@ public class ParkingLotTest
     {
         try
         {
-            parkingLot.park(car);
-            parkingLot.park(car);
+            parkingLot.park(car, 1);
+            parkingLot.park(car, 1);
         }
         catch (ParkingLotException e)
         {
@@ -62,7 +64,7 @@ public class ParkingLotTest
     @Test
     public void givenCarDetails_WhenProvidedToUnParkTheCar_ShouldReturnFalse()
     {
-        parkingLot.park(car);
+        parkingLot.park(car, 1);
         parkingLot.unPark(car);
         boolean isPresent = parkingLot.isCarPresent(car);
         Assert.assertFalse(isPresent);
@@ -73,7 +75,7 @@ public class ParkingLotTest
     {
         try
         {
-            parkingLot.park(car);
+            parkingLot.park(car, 1);
             parkingLot.unPark(new Car());
         }
         catch (ParkingLotException e)
@@ -87,10 +89,10 @@ public class ParkingLotTest
     {
         ParkingLotObserver owner = new ParkingOwner();
         parkingLot.addParkingLotObservers(owner);
-        parkingLot.park(car);
-        parkingLot.park(new Car());
-        parkingLot.park(new Car());
-        parkingLot.park(new Car());
+        parkingLot.park(car, 1);
+        parkingLot.park(new Car(), 1);
+        parkingLot.park(new Car(), 1);
+        parkingLot.park(new Car(), 1);
         String status = owner.getParkingStatus();
         Assert.assertEquals(ParkingStatus.PARKING_FULL.message, status);
     }
@@ -101,10 +103,10 @@ public class ParkingLotTest
         ParkingLotObserver owner = new ParkingOwner();
         ParkingLotObserver airportSecurity = new AirportSecurity();
         parkingLot.addParkingLotObservers(owner, airportSecurity);
-        parkingLot.park(car);
-        parkingLot.park(new Car());
-        parkingLot.park(new Car());
-        parkingLot.park(new Car());
+        parkingLot.park(car, 1);
+        parkingLot.park(new Car(), 1);
+        parkingLot.park(new Car(), 1);
+        parkingLot.park(new Car(), 1);
         String ownerStatus = owner.getParkingStatus();
         String airportSecurityStatus = airportSecurity.getParkingStatus();
         Assert.assertEquals(ParkingStatus.PARKING_FULL.message, airportSecurityStatus);
@@ -116,9 +118,9 @@ public class ParkingLotTest
     {
         ParkingLotObserver owner = new ParkingOwner();
         parkingLot.addParkingLotObservers(owner);
-        parkingLot.park(car);
-        parkingLot.park(new Car());
-        parkingLot.park(new Car());
+        parkingLot.park(car, 1);
+        parkingLot.park(new Car(), 1);
+        parkingLot.park(new Car(), 1);
         parkingLot.unPark(car);
         String status = owner.getParkingStatus();
         Assert.assertEquals(ParkingStatus.PARKING_IS_AVAILABLE.message, status);
@@ -127,7 +129,7 @@ public class ParkingLotTest
     @Test
     public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedSlot_ShouldReturnTrue()
     {
-        parkingLot.park(car);
+        parkingLot.park(car, 1);
         boolean isPresent = parkingLot.isCarPresent(car);
         Assert.assertTrue(isPresent);
     }
@@ -135,8 +137,8 @@ public class ParkingLotTest
     @Test
     public void givenCarDetails_WhenProvidedToGetCarLocation_ShouldReturnParkingSlotNumber()
     {
-        parkingLot.park(car);
-        parkingLot.park(new Car());
+        parkingLot.park(car, 1);
+        parkingLot.park(new Car(), 1);
         int slotNumber = parkingLot.carLocation(car);
         Assert.assertEquals(1, slotNumber);
     }
@@ -146,9 +148,9 @@ public class ParkingLotTest
     {
         try
         {
-            parkingLot.park(car);
-            parkingLot.park(new Car());
-            parkingLot.park(new Car());
+            parkingLot.park(car, 1);
+            parkingLot.park(new Car(), 1);
+            parkingLot.park(new Car(), 1);
             parkingLot.carLocation(new Car());
         }
         catch (ParkingLotException e)
@@ -160,7 +162,7 @@ public class ParkingLotTest
     @Test
     public void givenCarDetails_WhenAddedToParkingLot_ShouldReturnTimeOfParking()
     {
-        parkingLot.park(car);
+        parkingLot.park(car, 1);
         String parkedTime = parkingLot.getParkedTime(car);
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss");
         Assert.assertEquals(LocalDateTime.now().format(format), parkedTime);
@@ -169,7 +171,7 @@ public class ParkingLotTest
     @Test
     public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedLotAndSlot_ShouldReturnTrue()
     {
-        ParkingService parkingService = new ParkingService(5, 3);
+        ParkingService parkingService = new ParkingService(5, 3, attendantNames);
         parkingService.parkCar(firstCar);
         boolean isPresent = parkingService.isCarPresent(firstCar);
         Assert.assertTrue(isPresent);
@@ -178,8 +180,8 @@ public class ParkingLotTest
     @Test
     public void givenCarDetailsToParkingAttendant_WhenParkedAsPerProvidedLotAndSlot_ShouldReturnLocationOfCar()
     {
+        ParkingService parkingService = new ParkingService(5, 3, attendantNames);
         Car car1 = new Car("MH-26-YU-8884", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR);
-        ParkingService parkingService = new ParkingService(5, 3);
         parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
         parkingService.parkCar(car1);
         parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
@@ -195,10 +197,9 @@ public class ParkingLotTest
     @Test
     public void givenCarDetailsToParkingAttendant_WhenAllParkingLotsAreFull_ShouldGiveException()
     {
-        Car car1 = new Car("MH-26-YU-8884", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR);
         try
         {
-            ParkingService parkingService = new ParkingService(2, 2);
+            ParkingService parkingService = new ParkingService(2, 2, attendantNames);
             parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
             parkingService.parkCar(new Car("MH-26-YU-8884", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
             parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
@@ -217,7 +218,7 @@ public class ParkingLotTest
     {
         try
         {
-            ParkingService parkingService = new ParkingService(2, 2);
+            ParkingService parkingService = new ParkingService(2, 2, attendantNames);
             parkingService.parkCar(firstCar);
             parkingService.parkCar(firstCar);
         }
@@ -230,7 +231,7 @@ public class ParkingLotTest
     @Test
     public void givenCarDetailsOfHandicapDriver_WhenParkedAtNearestLotWithFreeSpace_ShouldReturnLocationOfCar()
     {
-        ParkingService parkingService = new ParkingService(3, 3);
+        ParkingService parkingService = new ParkingService(3, 3, attendantNames);
         parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
         parkingService.parkCar(new Car("MH-26-YU-8884", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR));
         parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR));
@@ -246,7 +247,7 @@ public class ParkingLotTest
     @Test
     public void givenCarDetailsOfLargeVehicle_WhenParkedAtLotWithHighestNumberOfFreeSpace_ShouldReturnLocationOfCar()
     {
-        ParkingService parkingService = new ParkingService(6, 3);
+        ParkingService parkingService = new ParkingService(6, 3, attendantNames);
         parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
         parkingService.parkCar(new Car("MH-22-RT-2327", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
         parkingService.parkCar(new Car("MH-26-YU-8884", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR));
@@ -265,9 +266,9 @@ public class ParkingLotTest
     @Test
     public void givenColourOfTheCar_WhenSearchedInAllParkingLots_ShouldReturnListOfLocationsOfCar()
     {
+        ParkingService parkingService = new ParkingService(6, 3, attendantNames);
         Car firstWhiteCar = new Car("MH-26-YU-8884", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR, "WHITE");
         Car secondWhiteCar = new Car("MH-18-OC-9922", DriverType.NORMAL_DRIVER, CarType.LARGE_CAR, "WHITE");
-        ParkingService parkingService = new ParkingService(6, 3);
         parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "RED"));
         parkingService.parkCar(new Car("MH-22-RT-2327", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "BLACK"));
         parkingService.parkCar(firstWhiteCar);
@@ -276,8 +277,27 @@ public class ParkingLotTest
         parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW"));
         parkingService.parkCar(thirdCar);
         List<String> whiteCarsLocationList = parkingService.getLocationOfCarBasedOnColour("WHITE");
-        List<String> expectedListOfLocation = Arrays.asList(" Parking Lot: 1  Parking Slots: [2, 3]",
-                " Parking Lot: 2  Parking Slots: [2]", " Parking Lot: 3  Parking Slots: []");
+        List<String> expectedListOfLocation = Arrays.asList(parkingService.getCarLocation(firstWhiteCar),
+                parkingService.getCarLocation(thirdCar), parkingService.getCarLocation(secondWhiteCar));
        Assert.assertEquals(expectedListOfLocation, whiteCarsLocationList);
+    }
+
+    @Test
+    public void givenColourOfTheCar_WhenSearchedInAllParkingLots_ShouldReturnListOfLocationsPlateNumberAndAttendantNameOfCar()
+    {
+        ParkingService parkingService = new ParkingService(6, 3, attendantNames);
+        Car firstBlueToyotaCar = new Car("MH-26-YU-8884", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR, "BLUE", "TOYOTA");
+        Car secondBlueToyotaCar = new Car("MH-18-OC-9922", DriverType.NORMAL_DRIVER, CarType.LARGE_CAR, "BLUE", "TOYOTA");
+        parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "RED", "TOYOTA"));
+        parkingService.parkCar(new Car("MH-22-RT-2327", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "BLACK" , "TOYOTA"));
+        parkingService.parkCar(firstBlueToyotaCar);
+        parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE", "BMW"));
+        parkingService.parkCar(secondBlueToyotaCar);
+        parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW", "TATA"));
+        List<String> whiteCarsLocationList = parkingService.getParkingDetailsOfCarBasedOnColour("BLUE", "TOYOTA");
+        List<String> expectedListOfLocation = Arrays.asList("( Parking Lot: 1, Parking Slot: 2," +
+                        " Plate Number: MH-26-YU-8884, Attendant Name: FirstAttendant )",
+                "( Parking Lot: 2, Parking Slot: 2, Plate Number: MH-18-OC-9922, Attendant Name: SecondAttendant )");
+        Assert.assertEquals(expectedListOfLocation, whiteCarsLocationList);
     }
 }
