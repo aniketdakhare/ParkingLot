@@ -92,6 +92,8 @@ public class ParkingService
             List<Integer> carLocationBasedOnColour = lot.getCarLocationBasedOnColour(colour);
             listOfLocationsOfCar.add(" Parking Lot: " + (this.parkingLots.indexOf(lot) + 1)
                     + "  Parking Slots: " + carLocationBasedOnColour); });
+        if (listOfLocationsOfCar.isEmpty())
+            throw new ParkingLotException(ParkingLotException.Type.NO_SUCH_CAR_PRESENT);
         return listOfLocationsOfCar;
     }
 }

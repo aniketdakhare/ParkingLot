@@ -280,4 +280,23 @@ public class ParkingLotTest
                 " Parking Lot: 2  Parking Slots: [2]", " Parking Lot: 3  Parking Slots: []");
        Assert.assertEquals(expectedListOfLocation, whiteCarsLocationList);
     }
+
+    @Test
+    public void givenColourOfTheCar_WhenNotPresentInAnyOfTheParkingLot_ShouldGiveException()
+    {
+        try
+        {
+            ParkingService parkingService = new ParkingService(6, 3);
+            parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "RED"));
+            parkingService.parkCar(new Car("MH-22-RT-2327", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "BLACK"));
+            parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE"));
+            parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE"));
+            parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW"));
+            parkingService.getLocationOfCarBasedOnColour("WHITE");
+        }
+        catch (ParkingLotException e)
+        {
+            Assert.assertEquals(ParkingLotException.Type.NO_SUCH_CAR_PRESENT, e.type);
+        }
+    }
 }
