@@ -8,16 +8,15 @@ import java.time.format.DateTimeFormatter;
 public class ParkingSlotDetails
 {
     private Car car;
-    private String time;
+    private LocalDateTime time;
     private int slotNumber;
     private int parkingLotNumber;
     private String attendantName;
-    private DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss");
 
     public ParkingSlotDetails(Car car, int slotNumber, int parkingLotNumber, String attendantName)
     {
         this.car = car;
-        this.time = LocalDateTime.now().format(format);
+        this.time = LocalDateTime.now().withNano(0);
         this.slotNumber = slotNumber;
         this.parkingLotNumber = parkingLotNumber;
         this.attendantName =attendantName;
@@ -25,7 +24,7 @@ public class ParkingSlotDetails
 
     public ParkingSlotDetails() { }
 
-    public String getParkedTime()
+    public LocalDateTime getParkedTime()
     {
         return time;
     }

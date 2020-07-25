@@ -6,6 +6,8 @@ import com.bridgelabz.parkinglot.model.Car;
 import com.bridgelabz.parkinglot.observer.ParkingLotObserver;
 import com.bridgelabz.parkinglot.utility.ParkingSlotDetails;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -83,6 +85,14 @@ public class ParkingLot
                 .collect(Collectors.toList());
     }
 
+    public List<ParkingSlotDetails> getParkingDetailsOfCarParkedWithInProvidedTime(int minutes)
+    {
+        return this.parkingMap.values().stream().filter(parkingSlot -> parkingSlot.getCar() != null)
+                .filter(parkingSlot -> Duration.between(parkingSlot.getParkedTime(),
+                        LocalDateTime.now()).toMinutes() <= minutes)
+                .collect(Collectors.toList());
+    }
+
     private ParkingSlotDetails getSlotDetails(Car car)
     {
         return this.parkingMap.values()
@@ -110,7 +120,7 @@ public class ParkingLot
         Collections.addAll(observerList, observer);
     }
 
-    public String getParkedTime(Car car)
+    public LocalDateTime getParkedTime(Car car)
     {
         return this.getSlotDetails(car).getParkedTime();
     }

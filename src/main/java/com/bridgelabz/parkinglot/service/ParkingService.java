@@ -123,4 +123,16 @@ public class ParkingService
             throw new ParkingLotException(ParkingLotException.Type.NO_SUCH_CAR_PRESENT);
         return listOfLocationsOfCar;
     }
+
+    public List<String> getParkingDetailsOfCarWithInProvidedRange(int minutes)
+    {
+        List<String> listOfParkingDetailsOfCar = new ArrayList<>();
+        this.parkingLots.stream().map(lot -> lot.getParkingDetailsOfCarParkedWithInProvidedTime(minutes))
+                .forEachOrdered(parkingDetails -> parkingDetails.stream()
+                        .map(location -> "( Parking Lot: " + (location.getParkingLotNumber() + 1) +
+                                ", Parking Slot: " + location.getSlotNumber() +
+                                ", Plate Number: " + location.getCar().carNumber + " )")
+                        .forEach(listOfParkingDetailsOfCar::add));
+        return listOfParkingDetailsOfCar;
+    }
 }

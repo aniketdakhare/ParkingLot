@@ -163,9 +163,8 @@ public class ParkingLotTest
     public void givenCarDetails_WhenAddedToParkingLot_ShouldReturnTimeOfParking()
     {
         parkingLot.park(car, 1);
-        String parkedTime = parkingLot.getParkedTime(car);
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss");
-        Assert.assertEquals(LocalDateTime.now().format(format), parkedTime);
+        LocalDateTime parkedTime = parkingLot.getParkedTime(car);
+        Assert.assertEquals(LocalDateTime.now().withNano(0), parkedTime);
     }
 
     @Test
@@ -375,5 +374,23 @@ public class ParkingLotTest
         {
             Assert.assertEquals(ParkingLotException.Type.NO_SUCH_CAR_PRESENT, e.type);
         }
+    }
+
+    @Test
+    public void givenTimeRangeForParkedCars_WhenSearchedForAllTheCars_ShouldReturnListOfLocationsAndPlateNumberOfCar()
+    {
+        Car firstCar = new Car("MH-26-YU-8884", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR, "WHITE", "BMW");
+        Car secondCar = new Car("MH-18-OC-9922", DriverType.NORMAL_DRIVER, CarType.LARGE_CAR, "BLACK", "BMW");
+        Car thirdCar = new Car("MH-12-UC-4322", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLACK", "BMW");
+        ParkingService parkingService = new ParkingService(6, 3, attendantNames);
+        parkingService.parkCar(firstCar);
+        parkingService.parkCar(secondCar);
+        parkingService.parkCar(thirdCar);
+        List<String> carsLocationList = parkingService.getParkingDetailsOfCarWithInProvidedRange(30);
+        List<String> expectedListOfLocation = Arrays.asList("( Parking Lot: 1, Parking Slot: 1," +
+                        " Plate Number: MH-26-YU-8884 )",
+                "( Parking Lot: 2, Parking Slot: 1, Plate Number: MH-18-OC-9922 )",
+                "( Parking Lot: 3, Parking Slot: 1, Plate Number: MH-12-UC-4322 )");
+        Assert.assertEquals(expectedListOfLocation, carsLocationList);
     }
 }
