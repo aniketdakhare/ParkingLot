@@ -320,5 +320,22 @@ public class ParkingLotTest
                 parkingService.getCarLocation(thirdCar), parkingService.getCarLocation(secondCar));
         Assert.assertEquals(expectedListOfLocation, carsLocationList);
     }
-}
 
+    @Test
+    public void givenCompanyNameOfTheCar_WhenNotPresentInAnyOfTheParkingLot_ShouldGiveException()
+    {
+        try
+        {
+            ParkingService parkingService = new ParkingService(6, 3, attendantNames);
+            parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "RED", "TOYOTA"));
+            parkingService.parkCar(new Car("MH-22-RT-2327", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "BLACK" , "TOYOTA"));
+            parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE", "TATA"));
+            parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW", "TATA"));
+            parkingService.getLocationOfCarBasedOnCompany("BMW");
+        }
+        catch (ParkingLotException e)
+        {
+            Assert.assertEquals(ParkingLotException.Type.NO_SUCH_CAR_PRESENT, e.type);
+        }
+    }
+}
