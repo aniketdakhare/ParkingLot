@@ -107,4 +107,14 @@ public class ParkingService
                     + ", Attendant Name: " + details.getAttendantName() + " )").forEach(listOfParkingDetailsOfCar::add); });
         return listOfParkingDetailsOfCar;
     }
+
+    public List<String> getLocationOfCarBasedOnCompany(String companyName)
+    {
+        List<String> listOfLocationsOfCar = new ArrayList<>();
+        this.parkingLots.stream().map(lot -> lot.getCarsParkingDetailsBasedOnCarCompany(companyName))
+                .forEachOrdered(carLocationBasedOnCompany -> carLocationBasedOnCompany.stream()
+                        .map(location -> "Parking Lot: " + (location.getParkingLotNumber() + 1)
+                                + "  Parking Slot: " + location.getSlotNumber()).forEach(listOfLocationsOfCar::add));
+        return listOfLocationsOfCar;
+    }
 }

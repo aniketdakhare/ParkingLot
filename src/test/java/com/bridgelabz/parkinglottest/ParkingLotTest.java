@@ -294,10 +294,31 @@ public class ParkingLotTest
         parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE", "BMW"));
         parkingService.parkCar(secondBlueToyotaCar);
         parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW", "TATA"));
-        List<String> whiteCarsLocationList = parkingService.getParkingDetailsOfCarBasedOnColour("BLUE", "TOYOTA");
+        List<String> carsLocationList = parkingService.getParkingDetailsOfCarBasedOnColour("BLUE", "TOYOTA");
         List<String> expectedListOfLocation = Arrays.asList("( Parking Lot: 1, Parking Slot: 2," +
                         " Plate Number: MH-26-YU-8884, Attendant Name: FirstAttendant )",
                 "( Parking Lot: 2, Parking Slot: 2, Plate Number: MH-18-OC-9922, Attendant Name: SecondAttendant )");
-        Assert.assertEquals(expectedListOfLocation, whiteCarsLocationList);
+        Assert.assertEquals(expectedListOfLocation, carsLocationList);
+    }
+
+    @Test
+    public void givenCompanyNameOfTheCar_WhenSearchedInAllParkingLots_ShouldReturnListOfLocationsOfCar()
+    {
+        ParkingService parkingService = new ParkingService(6, 3, attendantNames);
+        Car firstCar = new Car("MH-26-YU-8884", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR, "WHITE", "BMW");
+        Car secondCar = new Car("MH-18-OC-9922", DriverType.NORMAL_DRIVER, CarType.LARGE_CAR, "BLACK", "BMW");
+        Car thirdCar = new Car("MH-12-UC-4322", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLACK", "BMW");
+        parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "RED", "TOYOTA"));
+        parkingService.parkCar(new Car("MH-22-RT-2327", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "BLACK" , "TOYOTA"));
+        parkingService.parkCar(firstCar);
+        parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE", "TATA"));
+        parkingService.parkCar(secondCar);
+        parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW", "TATA"));
+        parkingService.parkCar(thirdCar);
+        List<String> carsLocationList = parkingService.getLocationOfCarBasedOnCompany("BMW");
+        List<String> expectedListOfLocation = Arrays.asList(parkingService.getCarLocation(firstCar),
+                parkingService.getCarLocation(thirdCar), parkingService.getCarLocation(secondCar));
+        Assert.assertEquals(expectedListOfLocation, carsLocationList);
     }
 }
+
