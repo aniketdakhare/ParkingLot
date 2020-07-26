@@ -105,7 +105,7 @@ public class ParkingLot
 
     public int getSlotToPark(CarType carType)
     {
-        if (carType == CarType.LARGE_CAR)
+        if (CarType.LARGE_CAR.equals(carType))
             return this.parkingMap.keySet()
                     .stream()
                     .filter(slot -> parkingMap.get(slot).getCar() == null)
