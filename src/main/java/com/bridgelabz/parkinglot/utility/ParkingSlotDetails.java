@@ -3,7 +3,6 @@ package com.bridgelabz.parkinglot.utility;
 import com.bridgelabz.parkinglot.model.Car;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class ParkingSlotDetails
 {
