@@ -428,9 +428,29 @@ public class ParkingLotTest
         parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW", "TATA"));
         parkingService.parkCar(new Car("MH-12-UC-4322", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR, "BLACK", "BMW"));
         List<String> carsLocationList = parkingService.getRequiredDetailsOfCar(ConditionType.LOT_NUMBER,"1");
-        List<String> expectedListOfLocation = Arrays.asList("( Parking Lot: 1, Parking Slot: 2, " +
+        List<String> expectedListOfLocationAndDetails = Arrays.asList("( Parking Lot: 1, Parking Slot: 2, " +
                 "Plate Number: MH-26-YU-8884, Car Company: BMW, Car Colour: WHITE )",
                 "( Parking Lot: 1, Parking Slot: 3, Plate Number: MH-12-UC-4322, Car Company: BMW, Car Colour: BLACK )");
-        Assert.assertEquals(expectedListOfLocation, carsLocationList);
+        Assert.assertEquals(expectedListOfLocationAndDetails, carsLocationList);
+    }
+
+    @Test
+    public void forGivenParkingLotNumber_WhenNoSmallHandicapCarsPresent_ShouldGiveException()
+    {
+        try
+        {
+            ParkingService parkingService = new ParkingService(3, 3, attendantNames);
+            parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "RED", "TOYOTA"));
+            parkingService.parkCar(new Car("MH-26-YU-8884", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR, "WHITE", "BMW"));
+            parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE", "TATA"));
+            parkingService.parkCar(new Car("MH-18-OC-9922", DriverType.NORMAL_DRIVER, CarType.LARGE_CAR, "BLACK", "BMW"));
+            parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW", "TATA"));
+            parkingService.parkCar(new Car("MH-12-UC-4322", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR, "BLACK", "BMW"));
+            parkingService.getRequiredDetailsOfCar(ConditionType.LOT_NUMBER,"2");
+        }
+        catch (ParkingLotException e)
+        {
+            Assert.assertEquals(ParkingLotException.Type.CAR_NOT_PRESENT, e.type);
+        }
     }
 }
