@@ -90,4 +90,16 @@ public class CarsParkingDetails
                 .filter(parkingSlot -> parkingSlot.getCar().carCompany.equalsIgnoreCase(companyName))
                 .collect(Collectors.toList());
     }
+
+    public List<String> getPlateNumberOfAllParkedCars(ArrayList<ParkingLot> parkingLots)
+    {
+        List<String> listOfPlateNumberOfCar = new ArrayList<>();
+        parkingLots.stream().map(lot -> lot.getParkingMap().values().stream()
+                .filter(parkingSlot -> parkingSlot.getCar() != null)
+                .collect(Collectors.toList()))
+                .forEachOrdered(parkingDetails -> parkingDetails.stream()
+                        .map(location -> "Plate Number: " + location.getCar().carNumber)
+                        .forEach(listOfPlateNumberOfCar::add));
+        return listOfPlateNumberOfCar;
+    }
 }

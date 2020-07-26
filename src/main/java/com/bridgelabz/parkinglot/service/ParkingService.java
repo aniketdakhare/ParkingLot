@@ -83,6 +83,9 @@ public class ParkingService
                 listOfParkingDetailsOfCar = carsParkingDetails
                         .getParkingDetailsOfCarWithInProvidedRange(Integer.parseInt(value[0]), this.parkingLots);
                 break;
+            case ALL_PARKED_CARS:
+                listOfParkingDetailsOfCar = carsParkingDetails.getPlateNumberOfAllParkedCars(this.parkingLots);
+
         }
         if (listOfParkingDetailsOfCar.isEmpty())
             throw new ParkingLotException(ParkingLotException.Type.CAR_NOT_PRESENT);

@@ -453,4 +453,35 @@ public class ParkingLotTest
             Assert.assertEquals(ParkingLotException.Type.CAR_NOT_PRESENT, e.type);
         }
     }
+
+    @Test
+    public void givenParkedCars_WhenAskedForAllParkedCars_ShouldReturnPlateNumberOfCars()
+    {
+        ParkingService parkingService = new ParkingService(3, 3, attendantNames);
+        parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "RED", "TOYOTA"));
+        parkingService.parkCar(new Car("MH-26-YU-8884", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR, "WHITE", "BMW"));
+        parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE", "TATA"));
+        parkingService.parkCar(new Car("MH-18-OC-9922", DriverType.NORMAL_DRIVER, CarType.LARGE_CAR, "BLACK", "BMW"));
+        parkingService.parkCar(new Car("MH-28-DP-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW", "TATA"));
+        parkingService.parkCar(new Car("MH-12-UC-4322", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR, "BLACK", "BMW"));
+        List<String> carsPlateNumberList = parkingService.getRequiredDetailsOfCar(ConditionType.ALL_PARKED_CARS);
+        List<String> expectedListOfLocationAndDetails = Arrays.asList("Plate Number: MH-22-RT-2324",
+                "Plate Number: MH-26-YU-8884", "Plate Number: MH-12-UC-4322", "Plate Number: MH-14-OP-2222",
+                "Plate Number: MH-28-DP-9923", "Plate Number: MH-18-OC-9922");
+        Assert.assertEquals(expectedListOfLocationAndDetails, carsPlateNumberList);
+    }
+
+    @Test
+    public void givenRequestForPlateNumberForAllCars_WhenNoCarIsParked_ShouldGiveException()
+    {
+        try
+        {
+            ParkingService parkingService = new ParkingService(3, 3, attendantNames);
+            parkingService.getRequiredDetailsOfCar(ConditionType.ALL_PARKED_CARS);
+        }
+        catch (ParkingLotException e)
+        {
+            Assert.assertEquals(ParkingLotException.Type.CAR_NOT_PRESENT, e.type);
+        }
+    }
 }
