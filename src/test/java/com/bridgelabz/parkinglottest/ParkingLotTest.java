@@ -1,6 +1,7 @@
 package com.bridgelabz.parkinglottest;
 
 import com.bridgelabz.parkinglot.enums.CarType;
+import com.bridgelabz.parkinglot.enums.ConditionType;
 import com.bridgelabz.parkinglot.enums.DriverType;
 import com.bridgelabz.parkinglot.enums.ParkingStatus;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
@@ -283,7 +284,7 @@ public class ParkingLotTest
         parkingService.parkCar(secondWhiteCar);
         parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW"));
         parkingService.parkCar(thirdCar);
-        List<String> whiteCarsLocationList = parkingService.getLocationOfCarBasedOnColour("WHITE");
+        List<String> whiteCarsLocationList = parkingService.getRequiredDetailsOfCar(ConditionType.COLOUR,"WHITE");
         List<String> expectedListOfLocation = Arrays.asList(parkingService.getCarLocation(firstWhiteCar),
                 parkingService.getCarLocation(thirdCar), parkingService.getCarLocation(secondWhiteCar));
        Assert.assertEquals(expectedListOfLocation, whiteCarsLocationList);
@@ -300,11 +301,11 @@ public class ParkingLotTest
             parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE", "BMW"));
             parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE", "TATA"));
             parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW", "TATA"));
-            parkingService.getLocationOfCarBasedOnColour("WHITE");
+            parkingService.getRequiredDetailsOfCar(ConditionType.COLOUR,"WHITE");
         }
         catch (ParkingLotException e)
         {
-            Assert.assertEquals(ParkingLotException.Type.NO_SUCH_CAR_PRESENT, e.type);
+            Assert.assertEquals(ParkingLotException.Type.CAR_NOT_PRESENT, e.type);
         }
     }
 
@@ -320,7 +321,7 @@ public class ParkingLotTest
         parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE", "BMW"));
         parkingService.parkCar(secondBlueToyotaCar);
         parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW", "TATA"));
-        List<String> carsLocationList = parkingService.getParkingDetailsOfCarBasedOnColourAndCompany("BLUE", "TOYOTA");
+        List<String> carsLocationList = parkingService.getRequiredDetailsOfCar(ConditionType.COLOUR_AND_COMPANY,"BLUE", "TOYOTA");
         List<String> expectedListOfLocation = Arrays.asList("( Parking Lot: 1, Parking Slot: 2," +
                         " Plate Number: MH-26-YU-8884, Attendant Name: FirstAttendant )",
                 "( Parking Lot: 2, Parking Slot: 2, Plate Number: MH-18-OC-9922, Attendant Name: SecondAttendant )");
@@ -338,11 +339,11 @@ public class ParkingLotTest
             parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE", "BMW"));
             parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE", "TATA"));
             parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW", "TATA"));
-            parkingService.getParkingDetailsOfCarBasedOnColourAndCompany("Black", "BMW");
+            parkingService.getRequiredDetailsOfCar(ConditionType.COLOUR_AND_COMPANY,"Black", "BMW");
         }
         catch (ParkingLotException e)
         {
-            Assert.assertEquals(ParkingLotException.Type.NO_SUCH_CAR_PRESENT, e.type);
+            Assert.assertEquals(ParkingLotException.Type.CAR_NOT_PRESENT, e.type);
         }
     }
 
@@ -360,7 +361,7 @@ public class ParkingLotTest
         parkingService.parkCar(secondCar);
         parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW", "TATA"));
         parkingService.parkCar(thirdCar);
-        List<String> carsLocationList = parkingService.getLocationOfCarBasedOnCompany("BMW");
+        List<String> carsLocationList = parkingService.getRequiredDetailsOfCar(ConditionType.COMPANY,"BMW");
         List<String> expectedListOfLocation = Arrays.asList(parkingService.getCarLocation(firstCar),
                 parkingService.getCarLocation(thirdCar), parkingService.getCarLocation(secondCar));
         Assert.assertEquals(expectedListOfLocation, carsLocationList);
@@ -376,11 +377,11 @@ public class ParkingLotTest
             parkingService.parkCar(new Car("MH-22-RT-2327", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "BLACK" , "TOYOTA"));
             parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE", "TATA"));
             parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW", "TATA"));
-            parkingService.getLocationOfCarBasedOnCompany("BMW");
+            parkingService.getRequiredDetailsOfCar(ConditionType.COMPANY,"BMW");
         }
         catch (ParkingLotException e)
         {
-            Assert.assertEquals(ParkingLotException.Type.NO_SUCH_CAR_PRESENT, e.type);
+            Assert.assertEquals(ParkingLotException.Type.CAR_NOT_PRESENT, e.type);
         }
     }
 
@@ -394,7 +395,7 @@ public class ParkingLotTest
         parkingService.parkCar(firstCar);
         parkingService.parkCar(secondCar);
         parkingService.parkCar(thirdCar);
-        List<String> carsLocationList = parkingService.getParkingDetailsOfCarWithInProvidedRange(30);
+        List<String> carsLocationList = parkingService.getRequiredDetailsOfCar(ConditionType.TIME,"30");
         List<String> expectedListOfLocation = Arrays.asList("( Parking Lot: 1, Parking Slot: 1," +
                         " Plate Number: MH-26-YU-8884 )",
                 "( Parking Lot: 2, Parking Slot: 1, Plate Number: MH-18-OC-9922 )",
@@ -408,11 +409,28 @@ public class ParkingLotTest
         try
         {
             ParkingService parkingService = new ParkingService(6, 3, attendantNames);
-            parkingService.getParkingDetailsOfCarWithInProvidedRange(30);
+            parkingService.getRequiredDetailsOfCar(ConditionType.TIME,"30");
         }
         catch (ParkingLotException e)
         {
-            Assert.assertEquals(ParkingLotException.Type.NO_CAR_PARKED, e.type);
+            Assert.assertEquals(ParkingLotException.Type.CAR_NOT_PRESENT, e.type);
         }
+    }
+
+    @Test
+    public void givenParkingLotNumber_WhenSearchedForSmallHandicapCars_ShouldReturnTheLocationAndDetailsOfCar()
+    {
+        ParkingService parkingService = new ParkingService(3, 3, attendantNames);
+        parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "RED", "TOYOTA"));
+        parkingService.parkCar(new Car("MH-26-YU-8884", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR, "WHITE", "BMW"));
+        parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR, "BLUE", "TATA"));
+        parkingService.parkCar(new Car("MH-18-OC-9922", DriverType.NORMAL_DRIVER, CarType.LARGE_CAR, "BLACK", "BMW"));
+        parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR, "YELLOW", "TATA"));
+        parkingService.parkCar(new Car("MH-12-UC-4322", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR, "BLACK", "BMW"));
+        List<String> carsLocationList = parkingService.getRequiredDetailsOfCar(ConditionType.LOT_NUMBER,"1");
+        List<String> expectedListOfLocation = Arrays.asList("( Parking Lot: 1, Parking Slot: 2, " +
+                "Plate Number: MH-26-YU-8884, Car Company: BMW, Car Colour: WHITE )",
+                "( Parking Lot: 1, Parking Slot: 3, Plate Number: MH-12-UC-4322, Car Company: BMW, Car Colour: BLACK )");
+        Assert.assertEquals(expectedListOfLocation, carsLocationList);
     }
 }

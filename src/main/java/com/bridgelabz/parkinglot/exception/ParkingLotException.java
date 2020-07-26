@@ -7,8 +7,7 @@ public class ParkingLotException extends RuntimeException
         CAR_DETAILS_MISMATCH("Car for a given car details is not found."),
         DUPLICATE_CAR("Car cannot be parked as given car is already present"),
         LOTS_ARE_FULL("All parking lots are full"),
-        NO_SUCH_CAR_PRESENT("The car as per given requirement is not present in any of the parking lot."),
-        NO_CAR_PARKED("No car is parked within given time.");
+        CAR_NOT_PRESENT("The car as per given requirement is not present in any of the parking lot.");
 
         String message;
 
