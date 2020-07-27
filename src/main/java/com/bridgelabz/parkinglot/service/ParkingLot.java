@@ -1,5 +1,6 @@
 package com.bridgelabz.parkinglot.service;
 
+import com.bridgelabz.parkinglot.enums.CarType;
 import com.bridgelabz.parkinglot.enums.ParkingStatus;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
 import com.bridgelabz.parkinglot.model.Car;
@@ -37,7 +38,7 @@ public class ParkingLot
         }
         if (this.isCarPresent(car))
             throw new ParkingLotException(ParkingLotException.Type.DUPLICATE_CAR);
-        int slotNumber = this.getSlotToPark(this.parkingMap);
+        int slotNumber = this.getSlotToPark(car.carType);
         this.parkingMap.put(slotNumber, new ParkingSlotDetails(car, slotNumber));
         carCount ++;
     }
@@ -75,11 +76,17 @@ public class ParkingLot
                 .orElseThrow(() -> new ParkingLotException(ParkingLotException.Type.CAR_DETAILS_MISMATCH));
     }
 
-    public int getSlotToPark(Map<Integer, ParkingSlotDetails> parkingMap)
+    public int getSlotToPark(CarType carType)
     {
+        if (CarType.LARGE_CAR.equals(carType))
+            return this.parkingMap.keySet()
+                    .stream()
+                    .filter(slot -> parkingMap.get(slot).getCar() == null)
+                    .filter(slot -> (slot + 1) <= CAPACITY && parkingMap.get(slot+1).getCar() == null)
+                    .findFirst().orElse(0);
         return parkingMap.keySet()
                 .stream()
-                .filter(slot -> parkingMap.get(slot).getCar() == null)
+                .filter(slot -> this.parkingMap.get(slot).getCar() == null)
                 .findFirst().get();
     }
 
