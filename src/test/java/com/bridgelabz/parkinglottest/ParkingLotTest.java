@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -246,20 +245,30 @@ public class ParkingLotTest
     @Test
     public void givenCarDetailsOfLargeVehicle_WhenParkedAtLotWithHighestNumberOfFreeSpace_ShouldReturnLocationOfCar()
     {
+        Car forthCar = new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR);
+        Car fifthCar = new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR);
         ParkingService parkingService = new ParkingService(6, 3, attendantNames);
-        parkingService.parkCar(new Car("MH-22-RT-2324", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(forthCar);
         parkingService.parkCar(new Car("MH-22-RT-2327", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-22-RT-2323", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-22-RT-2304", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(fifthCar);
+        parkingService.parkCar(new Car("MH-22-RT-2325", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-22-RT-2328", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-22-RT-2329", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
         parkingService.parkCar(new Car("MH-26-YU-8884", DriverType.HANDICAP_DRIVER, CarType.SMALL_CAR));
         parkingService.parkCar(new Car("MH-14-OP-2222", DriverType.HANDICAP_DRIVER, CarType.LARGE_CAR));
         parkingService.parkCar(new Car("MH-18-OC-9922", DriverType.NORMAL_DRIVER, CarType.LARGE_CAR));
-        parkingService.parkCar(new Car("MH-18-OC-9923", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
         parkingService.parkCar(secondCar);
+        parkingService.parkCar(new Car("MH-22-RT-2394", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.parkCar(new Car("MH-22-RT-2004", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
+        parkingService.unParkCar(forthCar);
+        parkingService.unParkCar(fifthCar);
         parkingService.parkCar(thirdCar);
-        parkingService.parkCar(new Car("MH-35-SD-3333", DriverType.NORMAL_DRIVER, CarType.SMALL_CAR));
-        parkingService.parkCar(firstCar);
         String carLocation = parkingService.getCarLocation(thirdCar);
-        String expectedLocation = "Parking Lot: 2  Parking Slot: 3";
+        String expectedLocation = "Parking Lot: 3  Parking Slot: 5";
         Assert.assertEquals(expectedLocation, carLocation);
+
     }
 
     @Test
