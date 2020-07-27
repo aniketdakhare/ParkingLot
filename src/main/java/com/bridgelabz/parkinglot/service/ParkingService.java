@@ -1,6 +1,7 @@
 package com.bridgelabz.parkinglot.service;
 
 import com.bridgelabz.parkinglot.enums.CarType;
+import com.bridgelabz.parkinglot.enums.DriverType;
 import com.bridgelabz.parkinglot.exception.ParkingLotException;
 import com.bridgelabz.parkinglot.model.Car;
 
@@ -41,12 +42,30 @@ public class ParkingService
     private ParkingLot getLotToPark(Car car)
     {
         int totalCarsInAllLots = IntStream.range(0, totalParkingLots)
-                .map(lot -> this.parkingLots.get(lot).getCarCount()).sum();
+                .map(lot -> parkingLots.get(lot).getCarCount()).sum();
         if (totalCarsInAllLots >= (totalParkingSlots * totalParkingLots))
             throw new ParkingLotException(ParkingLotException.Type.LOTS_ARE_FULL);
         ParkingLot parkingLot = null;
-        List<ParkingLot> selectLot = new ArrayList<>(this.parkingLots);
-        switch (car.driverType)
+        List<ParkingLot> selectLot = new ArrayList<>(parkingLots);
+        switch (car.carType)
+        {
+            case SMALL_CAR:
+                parkingLot = this.getLotToParkAsPerDriverType(selectLot, car.driverType);
+                break;
+            case LARGE_CAR:
+                selectLot.sort(Comparator.comparing(ParkingLot::getCarCount));
+                parkingLot = selectLot.stream()
+                        .filter(lot -> lot.getSlotToPark(car.carType) > 0)
+                        .findFirst().get();
+                break;
+        }
+        return parkingLot;
+    }
+
+    private ParkingLot getLotToParkAsPerDriverType(List<ParkingLot> selectLot, DriverType driverType)
+    {
+        ParkingLot parkingLot = null;
+        switch (driverType)
         {
             case NORMAL_DRIVER:
                 selectLot.sort(Comparator.comparing(ParkingLot::getCarCount));
@@ -54,10 +73,6 @@ public class ParkingService
                 break;
             case HANDICAP_DRIVER:
                 int lot = 0;
-                if (car.carType.equals(CarType.LARGE_CAR))
-                {
-                    selectLot.sort(Comparator.comparing(ParkingLot::getCarCount));
-                }
                 if (selectLot.get(lot).getCarCount() == totalParkingSlots)
                     lot++;
                 parkingLot = selectLot.get(lot);
@@ -65,7 +80,6 @@ public class ParkingService
         }
         return parkingLot;
     }
-
     public boolean isCarPresent(Car car)
     {
         return this.parkingLots.stream().anyMatch(lot -> lot.isCarPresent(car));
